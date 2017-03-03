@@ -1,4 +1,4 @@
-package gomtr
+package main
 
 type TTLData struct {
 	id     int64
