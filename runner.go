@@ -19,6 +19,7 @@ type MtrService struct {
 	index     int64
 	in        io.WriteCloser
 	out       io.ReadCloser
+	outChan   chan string
 }
 
 func NewMtrService() *MtrService {
@@ -28,6 +29,7 @@ func NewMtrService() *MtrService {
 		index:     1,
 		in:        nil,
 		out:       nil,
+		outChan:   make(chan string, 10),
 	}
 }
 
@@ -64,30 +66,46 @@ func (ms *MtrService) startup() {
 		fmt.Println(e)
 	}
 
-	// read data
+	// read data and put into result chan
 	go func() {
 		for {
 			var readBytes []byte = make([]byte, 100)
 			ms.out.Read(readBytes)
-			fmt.Print(string(readBytes))
-			time.Sleep(1)
+			if string(readBytes) != "" {
+				ms.outChan <- string(readBytes)
+			}
 		}
 	}()
 
+	// get result from chan and parse
 	go func() {
 		for {
-			// todo: use channel for output
+			select {
+			case result := <-ms.outChan:
+				{
+					ms.parseTTLData(string(result))
+					fmt.Println(result)
+				}
+			}
+
+		}
+	}()
+
+	// error output
+	go func() {
+		for {
 			var readBytes []byte = make([]byte, 100)
 			err.Read(readBytes)
-			ms.parseTTLData(string(readBytes))
 			time.Sleep(1)
 		}
 	}()
 
+	// start sub process
 	if e := cmd.Start(); nil != e {
 		fmt.Printf("ERROR: %v\n", e)
 	}
 
+	// wait sub process
 	if e := cmd.Wait(); nil != e {
 		fmt.Printf("ERROR: %v\n", e)
 	}
