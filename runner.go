@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -20,7 +19,6 @@ type MtrService struct {
 	index     int64
 	in        io.WriteCloser
 	out       io.ReadCloser
-	lock      sync.Mutex
 }
 
 func NewMtrService() *MtrService {
@@ -30,12 +28,22 @@ func NewMtrService() *MtrService {
 		index:     1,
 		in:        nil,
 		out:       nil,
-		lock:      sync.Mutex{},
 	}
 }
 
+// start service and wait mtr-packet stdio
 func (ms *MtrService) Start() {
-	ms.lock.Lock()
+	go ms.startup()
+	for {
+		if ms.in != nil && ms.out != nil {
+			break
+		}
+
+		time.Sleep(1)
+	}
+}
+
+func (ms *MtrService) startup() {
 
 	cmd := exec.Command("./mtr-packet")
 
@@ -80,8 +88,6 @@ func (ms *MtrService) Start() {
 		fmt.Printf("ERROR: %v\n", e)
 	}
 
-	ms.lock.Unlock()
-
 	if e := cmd.Wait(); nil != e {
 		fmt.Printf("ERROR: %v\n", e)
 	}
@@ -96,8 +102,6 @@ func (ms *MtrService) send(id int64, ip string, ttls int) {
 }
 
 func (ms *MtrService) Request(ip string, ttls int, callback func()) {
-	ms.lock.Lock()
-	ms.lock.Unlock()
 
 	task := mtrTask{
 		id:       ms.index,
