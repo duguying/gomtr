@@ -36,13 +36,7 @@ func NewMtrService() *MtrService {
 // start service and wait mtr-packet stdio
 func (ms *MtrService) Start() {
 	go ms.startup()
-	for {
-		if ms.in != nil && ms.out != nil {
-			break
-		}
-
-		time.Sleep(1)
-	}
+	time.Sleep(time.Second)
 }
 
 func (ms *MtrService) startup() {
@@ -89,7 +83,6 @@ func (ms *MtrService) startup() {
 			case result := <-ms.outChan:
 				{
 					ms.parseTTLData(string(result))
-					fmt.Println(result)
 				}
 			}
 
@@ -125,7 +118,7 @@ func (ms *MtrService) send(id int64, ip string, ttls int) {
 
 func (ms *MtrService) Request(ip string, ttls int, callback func()) {
 
-	task := mtrTask{
+	task := &mtrTask{
 		id:       ms.index,
 		callback: callback,
 		ttls:     ttls,
