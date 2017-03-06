@@ -66,6 +66,11 @@ func (ms *MtrService) startup() {
 		fmt.Println(e)
 	}
 
+	// start sub process
+	if e := cmd.Start(); nil != e {
+		fmt.Printf("ERROR: %v\n", e)
+	}
+
 	// read data and put into result chan
 	go func() {
 		for {
@@ -99,11 +104,6 @@ func (ms *MtrService) startup() {
 			time.Sleep(1)
 		}
 	}()
-
-	// start sub process
-	if e := cmd.Start(); nil != e {
-		fmt.Printf("ERROR: %v\n", e)
-	}
 
 	// wait sub process
 	if e := cmd.Wait(); nil != e {
