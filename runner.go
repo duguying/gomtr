@@ -119,7 +119,7 @@ func (ms *MtrService) send(id int64, ip string, ttls int) {
 
 	sendId := id * 100
 	for idx := 1; idx <= ttls; idx++ {
-		ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\r", sendId+int64(idx), ip, idx)))
+		ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
 	}
 }
 
