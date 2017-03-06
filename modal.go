@@ -1,8 +1,8 @@
 package gomtr
 
 import (
-	"github.com/gogather/safemap"
 	"fmt"
+	"github.com/gogather/safemap"
 )
 
 // parsed ttl item data

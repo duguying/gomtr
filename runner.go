@@ -64,9 +64,9 @@ func (ms *MtrService) Start() {
 
 	go func() {
 		for {
+			// todo: use channel for output
 			var readBytes []byte = make([]byte, 100)
 			err.Read(readBytes)
-			//fmt.Print(string(readBytes))
 			ms.parseTTLData(string(readBytes))
 			time.Sleep(1)
 		}
@@ -85,7 +85,7 @@ func (ms *MtrService) Start() {
 func (ms *MtrService) send(id int64, ip string, ttls int) {
 	sendId := id * 100
 	for idx := 1; idx <= ttls; idx++ {
-		ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
+		ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\r", sendId+int64(idx), ip, idx)))
 	}
 }
 
@@ -152,7 +152,7 @@ func (ms *MtrService) parseTTLData(data string) {
 		}
 	}
 
-	// TODO: store
+	// store
 	task, ok := ms.taskQueue.Get(fmt.Sprintf("%d", ms.getRealID(fullID)))
 	if ok {
 		ttlID := ms.getTTLID(fullID)
