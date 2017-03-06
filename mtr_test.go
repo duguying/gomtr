@@ -11,7 +11,7 @@ func Test_Mtr(t *testing.T) {
 	go mtr.Start()
 
 	for {
-		mtr.Request("183.131.7.130", 2, func() {
+		mtr.Request("183.131.7.130", 2, func(id int64) {
 			fmt.Println("hello, mtr")
 		})
 	}

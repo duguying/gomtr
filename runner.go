@@ -116,7 +116,7 @@ func (ms *MtrService) send(id int64, ip string, ttls int) {
 	}
 }
 
-func (ms *MtrService) Request(ip string, ttls int, callback func()) {
+func (ms *MtrService) Request(ip string, ttls int, callback func(int64)) {
 
 	task := &mtrTask{
 		id:       ms.index,
@@ -192,7 +192,7 @@ func (ms *MtrService) parseTTLData(data string) {
 			// callback
 			cb := task.(*mtrTask).callback
 			if cb != nil {
-				cb()
+				cb(task.(*mtrTask).id)
 			}
 		}
 	}
