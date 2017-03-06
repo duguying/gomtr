@@ -17,7 +17,7 @@ type TTLData struct {
 // task
 type mtrTask struct {
 	id       int64
-	callback func(int64)
+	callback func(interface{})
 	ttls     int
 	ttlData  *safemap.SafeMap // item is ttlData, key is ttl
 }
