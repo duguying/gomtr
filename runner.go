@@ -10,7 +10,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"sync"
 )
+
+var lck = sync.RWMutex{}
 
 // service
 type MtrService struct {
@@ -65,9 +68,12 @@ func (ms *MtrService) startup() {
 		fmt.Printf("ERROR: %v\n", e)
 	}
 
+
+
 	// read data and put into result chan
 	go func() {
 		for {
+			lck.RLock()
 			var buf []byte = make([]byte, 1000)
 			n, err := ms.out.Read(buf)
 			if err != nil {
@@ -77,6 +83,7 @@ func (ms *MtrService) startup() {
 			if input != "" {
 				ms.outChan <- input
 			}
+			lck.RUnlock()
 		}
 	}()
 
@@ -111,9 +118,11 @@ func (ms *MtrService) startup() {
 
 func (ms *MtrService) send(id int64, ip string, c int) {
 	defer func() {
+		lck.Unlock()
 		recover()
 	}()
 
+	lck.Lock()
 	maxttls := 50
 
 	if c > 100 {
