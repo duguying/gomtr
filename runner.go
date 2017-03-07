@@ -69,10 +69,14 @@ func (ms *MtrService) startup() {
 	// read data and put into result chan
 	go func() {
 		for {
-			var readBytes []byte = make([]byte, 100)
-			ms.out.Read(readBytes)
-			if string(readBytes) != "" {
-				ms.outChan <- string(readBytes)
+			var buf []byte = make([]byte, 1000)
+			n,err := ms.out.Read(buf)
+			if err != nil {
+				break
+			}
+			input := string(buf[:n])
+			if input != "" {
+				ms.outChan <- input
 			}
 		}
 	}()
@@ -83,7 +87,8 @@ func (ms *MtrService) startup() {
 			select {
 			case result := <-ms.outChan:
 				{
-					ms.parseTTLData(string(result))
+					log.Pinkln(len(result))
+					ms.parseTTLData(result)
 				}
 			}
 
@@ -135,6 +140,19 @@ func (ms *MtrService) Request(ip string, ttls int, callback func(interface{})) {
 }
 
 func (ms *MtrService) parseTTLData(data string) {
+	segs := strings.Split(data, "\n")
+
+	for i := 0; i < len(segs); i++ {
+		item := segs[i]
+		if len(item) > 0 {
+			ms.parseTTLDatum(item)
+		}
+	}
+}
+func (ms *MtrService) parseTTLDatum (data string) {
+
+	strings.Contains(data, "\n")
+
 	segments := strings.Split(data, " ")
 
 	var ttlData *TTLData
@@ -156,11 +174,13 @@ func (ms *MtrService) parseTTLData(data string) {
 				TTLID: ms.getTTLID(fullID),
 				err:   errors.New("command parse error"),
 			}
+			log.Redln("command-parse-error")
 		} else if segments[1] == "no-reply" {
 			ttlData = &TTLData{
 				TTLID: ms.getTTLID(fullID),
 				err:   errors.New("no reply"),
 			}
+			log.Redln("no reply")
 		}
 	}
 
@@ -178,6 +198,8 @@ func (ms *MtrService) parseTTLData(data string) {
 			ip:     segments[3],
 			time:   ttlTime,
 		}
+
+		log.Yellowln(ttlData)
 	}
 
 	// store
@@ -196,7 +218,7 @@ func (ms *MtrService) parseTTLData(data string) {
 			if cb != nil {
 				cb(task.(*mtrTask))
 				ms.taskQueue.Remove(taskID)
-				log.Bluef("%d", len(ms.taskQueue.GetMap()))
+				log.Bluef("%v", ms.taskQueue.JSON())
 			}
 		}
 	}
