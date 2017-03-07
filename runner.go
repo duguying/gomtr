@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/gogather/com/log"
 )
 
 // service
@@ -87,7 +86,6 @@ func (ms *MtrService) startup() {
 			select {
 			case result := <-ms.outChan:
 				{
-					log.Pinkln(len(result))
 					ms.parseTTLData(result)
 				}
 			}
@@ -174,13 +172,11 @@ func (ms *MtrService) parseTTLDatum (data string) {
 				TTLID: ms.getTTLID(fullID),
 				err:   errors.New("command parse error"),
 			}
-			log.Redln("command-parse-error")
 		} else if segments[1] == "no-reply" {
 			ttlData = &TTLData{
 				TTLID: ms.getTTLID(fullID),
 				err:   errors.New("no reply"),
 			}
-			log.Redln("no reply")
 		}
 	}
 
@@ -198,8 +194,6 @@ func (ms *MtrService) parseTTLDatum (data string) {
 			ip:     segments[3],
 			time:   ttlTime,
 		}
-
-		log.Yellowln(ttlData)
 	}
 
 	// store
@@ -218,7 +212,6 @@ func (ms *MtrService) parseTTLDatum (data string) {
 			if cb != nil {
 				cb(task.(*mtrTask))
 				ms.taskQueue.Remove(taskID)
-				log.Bluef("%v", ms.taskQueue.JSON())
 			}
 		}
 	}
