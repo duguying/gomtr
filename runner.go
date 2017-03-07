@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"github.com/gogather/com/log"
 )
 
 // service
@@ -29,7 +30,7 @@ func NewMtrService() *MtrService {
 		index:     1,
 		in:        nil,
 		out:       nil,
-		outChan:   make(chan string, 10),
+		outChan:   make(chan string, 1000),
 	}
 }
 
@@ -180,7 +181,8 @@ func (ms *MtrService) parseTTLData(data string) {
 	}
 
 	// store
-	task, ok := ms.taskQueue.Get(fmt.Sprintf("%d", ms.getRealID(fullID)))
+	taskID := fmt.Sprintf("%d", ms.getRealID(fullID))
+	task, ok := ms.taskQueue.Get(taskID)
 	if ok {
 		ttlID := ms.getTTLID(fullID)
 		task.(*mtrTask).save(ttlID, ttlData)
@@ -193,6 +195,8 @@ func (ms *MtrService) parseTTLData(data string) {
 			cb := task.(*mtrTask).callback
 			if cb != nil {
 				cb(task.(*mtrTask))
+				ms.taskQueue.Remove(taskID)
+				log.Bluef("%d", len(ms.taskQueue.GetMap()))
 			}
 		}
 	}
