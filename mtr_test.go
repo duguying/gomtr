@@ -13,7 +13,7 @@ func Test_Mtr(t *testing.T) {
 	i := 1
 	for {
 		ttls := i % 30
-		mtr.Request("183.131.7.130", ttls, func(response interface{}) {
+		mtr.Request("183.131.7.130", ttls,10, func(response interface{}) {
 			fmt.Println(response)
 		})
 		i++

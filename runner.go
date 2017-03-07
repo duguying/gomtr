@@ -25,7 +25,7 @@ type MtrService struct {
 func NewMtrService() *MtrService {
 	return &MtrService{
 		taskQueue: safemap.New(),
-		flag:      10240000,
+		flag:      102400,
 		index:     1,
 		in:        nil,
 		out:       nil,
@@ -109,18 +109,33 @@ func (ms *MtrService) startup() {
 
 }
 
-func (ms *MtrService) send(id int64, ip string, ttls int) {
+func (ms *MtrService) send(id int64, ip string, ttls int, c int) {
 	defer func() {
 		recover()
 	}()
 
-	sendId := id * 100
-	for idx := 1; idx <= ttls; idx++ {
-		ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
+	if ttls>100 {
+		ttls = 99
+	}else if ttls<1 {
+		ttls = 1
 	}
+
+	if c>100 {
+		c=99
+	}else if c < 1 {
+		c=1
+	}
+
+	for i := 1; i <= c; i++ {
+		sendId := id * 10000 + int64(i) * 100
+		for idx := 1; idx <= ttls; idx++ {
+			ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
+		}
+	}
+
 }
 
-func (ms *MtrService) Request(ip string, ttls int, callback func(interface{})) {
+func (ms *MtrService) Request(ip string, ttls int, c int, callback func(interface{})) {
 
 	task := &MtrTask{
 		id:       ms.index,
@@ -131,7 +146,7 @@ func (ms *MtrService) Request(ip string, ttls int, callback func(interface{})) {
 
 	ms.taskQueue.Put(fmt.Sprintf("%d", ms.index), task)
 
-	ms.send(ms.index, ip, ttls)
+	ms.send(ms.index, ip, ttls, c)
 
 	ms.index++
 
