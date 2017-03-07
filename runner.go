@@ -69,7 +69,7 @@ func (ms *MtrService) startup() {
 	go func() {
 		for {
 			var buf []byte = make([]byte, 1000)
-			n,err := ms.out.Read(buf)
+			n, err := ms.out.Read(buf)
 			if err != nil {
 				break
 			}
@@ -116,14 +116,14 @@ func (ms *MtrService) send(id int64, ip string, c int) {
 
 	maxttls := 50
 
-	if c>100 {
-		c=99
-	}else if c < 1 {
-		c=1
+	if c > 100 {
+		c = 99
+	} else if c < 1 {
+		c = 1
 	}
 
 	for i := 1; i <= c; i++ {
-		sendId := id * 10000 + int64(i) * 100
+		sendId := id*10000 + int64(i)*100
 		for idx := 1; idx <= maxttls; idx++ {
 			ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
 		}
@@ -137,7 +137,7 @@ func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 		id:       ms.index,
 		callback: callback,
 		ttls:     0,
-		c:	  c,
+		c:        c,
 		ttlData:  safemap.New(),
 	}
 
@@ -164,7 +164,7 @@ func (ms *MtrService) parseTTLData(data string) {
 	}
 }
 
-func (ms *MtrService) parseTTLDatum (data string) {
+func (ms *MtrService) parseTTLDatum(data string) {
 
 	strings.Contains(data, "\n")
 
