@@ -109,16 +109,12 @@ func (ms *MtrService) startup() {
 
 }
 
-func (ms *MtrService) send(id int64, ip string, ttls int, c int) {
+func (ms *MtrService) send(id int64, ip string, c int) {
 	defer func() {
 		recover()
 	}()
 
-	if ttls>100 {
-		ttls = 99
-	}else if ttls<1 {
-		ttls = 1
-	}
+	maxttls := 50
 
 	if c>100 {
 		c=99
@@ -128,25 +124,25 @@ func (ms *MtrService) send(id int64, ip string, ttls int, c int) {
 
 	for i := 1; i <= c; i++ {
 		sendId := id * 10000 + int64(i) * 100
-		for idx := 1; idx <= ttls; idx++ {
+		for idx := 1; idx <= maxttls; idx++ {
 			ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
 		}
 	}
 
 }
 
-func (ms *MtrService) Request(ip string, ttls int, c int, callback func(interface{})) {
+func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 
 	task := &MtrTask{
 		id:       ms.index,
 		callback: callback,
-		ttls:     ttls,
+		ttls:     0,
 		ttlData:  safemap.New(),
 	}
 
 	ms.taskQueue.Put(fmt.Sprintf("%d", ms.index), task)
 
-	ms.send(ms.index, ip, ttls, c)
+	ms.send(ms.index, ip, c)
 
 	ms.index++
 
