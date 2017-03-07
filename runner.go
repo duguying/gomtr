@@ -1,6 +1,7 @@
 package gomtr
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"github.com/gogather/com"
@@ -10,7 +11,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"bufio"
 )
 
 const maxttls = 50
@@ -116,8 +116,6 @@ func (ms *MtrService) send(id int64, ip string, c int) {
 		recover()
 	}()
 
-
-
 	if c > 100 {
 		c = 99
 	} else if c < 1 {
@@ -138,7 +136,6 @@ func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 	task := &MtrTask{
 		id:       ms.index,
 		callback: callback,
-		ttls:     0,
 		c:        c,
 		ttlData:  safemap.New(),
 	}
@@ -168,7 +165,7 @@ func (ms *MtrService) parseTTLData(data string) {
 
 func (ms *MtrService) parseTTLDatum(data string) {
 
-	hasNewline:=strings.Contains(data, "\n")
+	hasNewline := strings.Contains(data, "\n")
 	if hasNewline {
 		fmt.Println(hasNewline)
 	}

@@ -23,7 +23,6 @@ func (td *TTLData) String() string {
 type MtrTask struct {
 	id       int64
 	callback func(interface{})
-	ttls     int
 	c        int
 	ttlData  *safemap.SafeMap // item is ttlData, key is ttl
 }
@@ -35,7 +34,7 @@ func (mt *MtrTask) save(ttl int, data *TTLData) {
 func (mt *MtrTask) check() bool {
 	for idx := 1; idx <= mt.c; idx++ {
 		for i := 1; i <= maxttls; i++ {
-			idstr := fmt.Sprintf("%2d%2d", idx, i)
+			idstr := fmt.Sprintf("%02d%02d", idx, i)
 			id, _ := strconv.Atoi(idstr)
 			_, ok := mt.ttlData.Get(fmt.Sprintf("%d", id))
 			if !ok {
