@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"bufio"
 )
 
 // service
@@ -68,14 +69,13 @@ func (ms *MtrService) startup() {
 	// read data and put into result chan
 	go func() {
 		for {
-			var buf []byte = make([]byte, 1000)
-			n, err := ms.out.Read(buf)
+			input, isPrefix, err := bufio.NewReader(ms.out).ReadLine()
 			if err != nil {
 				break
 			}
-			input := string(buf[:n])
-			if input != "" {
-				ms.outChan <- input
+
+			if !isPrefix && string(input) != "" {
+				ms.outChan <- string(input)
 			}
 		}
 	}()
