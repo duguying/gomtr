@@ -13,6 +13,8 @@ import (
 	"bufio"
 )
 
+const maxttls = 50
+
 // service
 type MtrService struct {
 	taskQueue *safemap.SafeMap
@@ -114,7 +116,7 @@ func (ms *MtrService) send(id int64, ip string, c int) {
 		recover()
 	}()
 
-	maxttls := 50
+
 
 	if c > 100 {
 		c = 99
@@ -251,5 +253,5 @@ func (ms *MtrService) getTTLID(fullID int64) int {
 }
 
 func (ms *MtrService) getRealID(fullID int64) int64 {
-	return fullID / 100
+	return fullID / 10000
 }
