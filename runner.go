@@ -122,7 +122,7 @@ func (ms *MtrService) send(id int64, ip string, ttls int) {
 
 func (ms *MtrService) Request(ip string, ttls int, callback func(interface{})) {
 
-	task := &mtrTask{
+	task := &MtrTask{
 		id:       ms.index,
 		callback: callback,
 		ttls:     ttls,
@@ -206,17 +206,17 @@ func (ms *MtrService) parseTTLDatum (data string) {
 	task, ok := ms.taskQueue.Get(taskID)
 	if ok {
 		ttlID := ms.getTTLID(fullID)
-		task.(*mtrTask).save(ttlID, ttlData)
+		task.(*MtrTask).save(ttlID, ttlData)
 	}
 
 	// check task
 	if ok {
-		if task.(*mtrTask).check() {
+		if task.(*MtrTask).check() {
 			// callback
-			cb := task.(*mtrTask).callback
+			cb := task.(*MtrTask).callback
 			if cb != nil {
-				cb(task.(*mtrTask))
-				task.(*mtrTask).clear()
+				cb(task.(*MtrTask))
+				task.(*MtrTask).clear()
 				ms.taskQueue.Remove(taskID)
 			}
 		}
