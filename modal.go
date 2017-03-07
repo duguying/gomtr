@@ -3,6 +3,7 @@ package gomtr
 import (
 	"fmt"
 	"github.com/gogather/safemap"
+	"strconv"
 )
 
 // parsed ttl item data
@@ -32,12 +33,17 @@ func (mt *MtrTask) save(ttl int, data *TTLData) {
 }
 
 func (mt *MtrTask) check() bool {
-	for i := 1; i <= mt.ttls; i++ {
-		_, ok := mt.ttlData.Get(fmt.Sprintf("%d", i))
-		if !ok {
-			return false
+	for idx := 1; idx <= mt.c; idx++ {
+		for i := 1; i <= 50; i++ {
+			idstr := fmt.Sprintf("%2d%2d", idx, i)
+			id, _ := strconv.Atoi(idstr)
+			_, ok := mt.ttlData.Get(fmt.Sprintf("%d", id))
+			if !ok {
+				return false
+			}
 		}
 	}
+
 	return true
 }
 
