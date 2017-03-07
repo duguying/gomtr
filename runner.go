@@ -135,6 +135,10 @@ func (ms *MtrService) Request(ip string, ttls int, callback func(interface{})) {
 
 	ms.index++
 
+	if ms.index > ms.flag {
+		ms.index = 1
+	}
+
 }
 
 func (ms *MtrService) parseTTLData(data string) {
@@ -147,6 +151,7 @@ func (ms *MtrService) parseTTLData(data string) {
 		}
 	}
 }
+
 func (ms *MtrService) parseTTLDatum (data string) {
 
 	strings.Contains(data, "\n")
@@ -211,6 +216,7 @@ func (ms *MtrService) parseTTLDatum (data string) {
 			cb := task.(*mtrTask).callback
 			if cb != nil {
 				cb(task.(*mtrTask))
+				task.(*mtrTask).clear()
 				ms.taskQueue.Remove(taskID)
 			}
 		}

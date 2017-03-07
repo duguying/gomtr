@@ -10,10 +10,13 @@ func Test_Mtr(t *testing.T) {
 	mtr := NewMtrService()
 	go mtr.Start()
 
+	i := 1
 	for {
-		mtr.Request("183.131.7.130", 2, func(response interface{}) {
+		ttls := i % 30
+		mtr.Request("183.131.7.130", ttls, func(response interface{}) {
 			fmt.Println(response)
 		})
+		i++
 	}
 
 	for {

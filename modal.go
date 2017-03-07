@@ -35,3 +35,9 @@ func (mt *mtrTask) check() bool {
 	}
 	return true
 }
+
+func (mt *mtrTask) clear() {
+	for key, _ := range mt.ttlData.GetMap() {
+		mt.ttlData.Remove(key)
+	}
+}
