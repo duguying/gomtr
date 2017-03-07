@@ -137,6 +137,7 @@ func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 		id:       ms.index,
 		callback: callback,
 		ttls:     0,
+		c:	  c,
 		ttlData:  safemap.New(),
 	}
 
@@ -238,7 +239,7 @@ func (ms *MtrService) parseTTLDatum (data string) {
 func (ms *MtrService) getTTLID(fullID int64) int {
 	idStr := fmt.Sprintf("%d", fullID)
 	length := len(idStr)
-	ttlStr := com.SubString(idStr, length-2, 2)
+	ttlStr := com.SubString(idStr, length-4, 4)
 	ttl, e := strconv.Atoi(ttlStr)
 	if e != nil {
 		ttl = 0
