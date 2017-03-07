@@ -157,7 +157,7 @@ func (ms *MtrService) parseTTLData(data string) {
 	segs := strings.Split(data, "\n")
 
 	for i := 0; i < len(segs); i++ {
-		item := segs[i]
+		item := strings.TrimSpace(segs[i])
 		if len(item) > 0 {
 			ms.parseTTLDatum(item)
 		}
