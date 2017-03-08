@@ -1,7 +1,7 @@
 package gomtr
 
 import (
-	//"bufio"
+	"bufio"
 	"errors"
 	"fmt"
 	"github.com/gogather/com"
@@ -71,26 +71,24 @@ func (ms *MtrService) startup() {
 	// read data and put into result chan
 	go func() {
 		for {
-			var buf []byte = make([]byte, 1000)
-			n, err := ms.out.Read(buf)
-			if err != nil {
-				break
-			}
-			input := string(buf[:n])
-			fmt.Print(input)
-			if input != "" {
-				//ms.outChan <- input
+			// read lines
+			for{
+				output, isPrefix, err := bufio.NewReader(ms.out).ReadLine()
+				fmt.Println("[O]",output)
+				if err != nil {
+					break
+				}
+
+				if string(output) != "" {
+					ms.outChan <- string(output)
+				}
+
+				if !isPrefix {
+					break
+				}
 			}
 
-			//output, isPrefix, err := bufio.NewReader(ms.out).ReadLine()
-			//fmt.Println("[O]",output)
-			//if err != nil {
-			//	break
-			//}
-			//
-			//if !isPrefix && string(output) != "" {
-			//	ms.outChan <- string(output)
-			//}
+
 		}
 	}()
 
@@ -176,6 +174,8 @@ func (ms *MtrService) parseTTLData(data string) {
 }
 
 func (ms *MtrService) parseTTLDatum(data string) {
+	// what i got
+	fmt.Println(data)
 
 	hasNewline := strings.Contains(data, "\n")
 	if hasNewline {
