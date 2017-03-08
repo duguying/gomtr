@@ -74,7 +74,6 @@ func (ms *MtrService) startup() {
 			// read lines
 			for{
 				output, isPrefix, err := bufio.NewReader(ms.out).ReadLine()
-				fmt.Println("[O]",output)
 				if err != nil {
 					break
 				}
