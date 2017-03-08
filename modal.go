@@ -35,10 +35,10 @@ func (mt *MtrTask) save(ttl int, data *TTLData) {
 
 func (mt *MtrTask) check() bool {
 	defer func() {
-		mt.checkLock.Lock()
+		mt.checkLock.Unlock()
 	}()
 
-	mt.checkLock.Unlock()
+	mt.checkLock.Lock()
 
 	for idx := 1; idx <= mt.c; idx++ {
 		for i := 1; i <= maxttls; i++ {
