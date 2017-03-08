@@ -72,8 +72,9 @@ func (ms *MtrService) startup() {
 	go func() {
 		for {
 			// read lines
+			bio := bufio.NewReader(ms.out)
 			for{
-				output, isPrefix, err := bufio.NewReader(ms.out).ReadLine()
+				output, isPrefix, err := bio.ReadLine()
 				if err != nil {
 					break
 				}
