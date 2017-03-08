@@ -11,6 +11,8 @@ func Test_Mtr(t *testing.T) {
 	mtr := NewMtrService()
 	go mtr.Start()
 
+	time.Sleep(time.Second * 10)
+
 	i := 1
 	for {
 		mtr.Request("183.131.7.130", 10, func(response interface{}) {
@@ -20,6 +22,7 @@ func Test_Mtr(t *testing.T) {
 		})
 		i++
 		time.Sleep(time.Second)
+		break
 	}
 
 	for {
