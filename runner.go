@@ -71,13 +71,14 @@ func (ms *MtrService) startup() {
 	// read data and put into result chan
 	go func() {
 		for {
-			input, isPrefix, err := bufio.NewReader(ms.out).ReadLine()
+			output, isPrefix, err := bufio.NewReader(ms.out).ReadLine()
+			fmt.Println("[O]",output)
 			if err != nil {
 				break
 			}
 
-			if !isPrefix && string(input) != "" {
-				ms.outChan <- string(input)
+			if !isPrefix && string(output) != "" {
+				ms.outChan <- string(output)
 			}
 		}
 	}()
