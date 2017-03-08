@@ -5,6 +5,7 @@ import (
 	"github.com/gogather/com/log"
 	"testing"
 	"time"
+	"fmt"
 )
 
 func Test_Mtr(t *testing.T) {
@@ -18,7 +19,7 @@ func Test_Mtr(t *testing.T) {
 		mtr.Request("183.131.7.130", 10, func(response interface{}) {
 			//fmt.Println(response)
 			task := response.(*MtrTask)
-			log.Greenln(task.id)
+			fmt.Println("[ID]",task.id)
 			log.Blueln(com.JsonEncode(task.GetResult()))
 		})
 		i++
