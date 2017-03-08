@@ -73,7 +73,7 @@ func (ms *MtrService) startup() {
 		for {
 			// read lines
 			bio := bufio.NewReader(ms.out)
-			for{
+			for {
 				output, isPrefix, err := bio.ReadLine()
 				if err != nil {
 					break
@@ -87,7 +87,6 @@ func (ms *MtrService) startup() {
 					break
 				}
 			}
-
 
 		}
 	}()

@@ -66,7 +66,11 @@ func (mt *MtrTask) GetResult() map[int]map[int]int64 {
 				if !ok {
 					results[ttl] = map[int]int64{}
 				}
-				results[ttl][cid] = itemData.time
+				if itemData.err != nil {
+					results[ttl][cid] = -1
+				} else {
+					results[ttl][cid] = itemData.time
+				}
 			}
 		}
 	}
