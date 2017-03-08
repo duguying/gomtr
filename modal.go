@@ -35,9 +35,12 @@ func (mt *MtrTask) check() bool {
 	for idx := 1; idx <= mt.c; idx++ {
 		for i := 1; i <= maxttls; i++ {
 			idstr := fmt.Sprintf("%02d%02d", idx, i)
-			id, _ := strconv.Atoi(idstr)
-			_, ok := mt.ttlData.Get(fmt.Sprintf("%d", id))
-			if !ok {
+			id, e := strconv.Atoi(idstr)
+			if e != nil {
+				return false
+			}
+			d, ok := mt.ttlData.Get(fmt.Sprintf("%d", id))
+			if !ok || d == nil {
 				return false
 			}
 		}
