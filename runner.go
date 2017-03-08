@@ -225,20 +225,24 @@ func (ms *MtrService) parseTTLDatum(data string) {
 
 	// store
 	taskID := fmt.Sprintf("%d", ms.getRealID(fullID))
-	task, ok := ms.taskQueue.Get(taskID)
-	if ok {
+	taskRaw, ok := ms.taskQueue.Get(taskID)
+	var task *MtrTask = nil
+	if ok && taskRaw!=nil {
+		task = taskRaw.(*MtrTask)
 		ttlID := ms.getTTLID(fullID)
-		task.(*MtrTask).save(ttlID, ttlData)
+		task.save(ttlID, ttlData)
+	}else{
+		return
 	}
 
 	// check task
 	if ok {
-		if task.(*MtrTask).check() {
+		if task.check() {
 			// callback
-			cb := task.(*MtrTask).callback
+			cb := task.callback
 			if cb != nil {
-				cb(task.(*MtrTask))
-				task.(*MtrTask).clear()
+				cb(task)
+				task.clear()
 				ms.taskQueue.Remove(taskID)
 			}
 		}
