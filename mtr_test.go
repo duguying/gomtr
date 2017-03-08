@@ -23,7 +23,7 @@ func Test_Mtr(t *testing.T) {
 		})
 		i++
 		//time.Sleep(time.Second)
-		break
+		//break
 	}
 
 	for {
