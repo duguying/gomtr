@@ -173,9 +173,6 @@ func (ms *MtrService) parseTTLData(data string) {
 }
 
 func (ms *MtrService) parseTTLDatum(data string) {
-	// what i got
-	fmt.Println(data)
-
 	hasNewline := strings.Contains(data, "\n")
 	if hasNewline {
 		fmt.Println(hasNewline)

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gogather/safemap"
 	"strconv"
+	"sync"
 )
 
 // parsed ttl item data
@@ -21,10 +22,11 @@ func (td *TTLData) String() string {
 
 // task
 type MtrTask struct {
-	id       int64
-	callback func(interface{})
-	c        int
-	ttlData  *safemap.SafeMap // item is ttlData, key is ttl
+	id        int64
+	callback  func(interface{})
+	c         int
+	ttlData   *safemap.SafeMap // item is ttlData, key is ttl
+	checkLock sync.Mutex
 }
 
 func (mt *MtrTask) save(ttl int, data *TTLData) {
@@ -32,6 +34,12 @@ func (mt *MtrTask) save(ttl int, data *TTLData) {
 }
 
 func (mt *MtrTask) check() bool {
+	defer func() {
+		mt.checkLock.Lock()
+	}()
+
+	mt.checkLock.Unlock()
+
 	for idx := 1; idx <= mt.c; idx++ {
 		for i := 1; i <= maxttls; i++ {
 			idstr := fmt.Sprintf("%02d%02d", idx, i)

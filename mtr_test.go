@@ -21,7 +21,7 @@ func Test_Mtr(t *testing.T) {
 			log.Blueln(com.JsonEncode(task.GetResult()))
 		})
 		i++
-		time.Sleep(time.Second)
+		//time.Sleep(time.Second)
 		break
 	}
 
