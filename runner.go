@@ -83,7 +83,7 @@ func (ms *MtrService) startup() {
 					ms.outChan <- string(output)
 				}
 
-				if !isPrefix {
+				if isPrefix {
 					break
 				}
 			}
