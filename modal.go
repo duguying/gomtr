@@ -58,7 +58,7 @@ func (mt *MtrTask) GetResult() map[int]map[int]int64 {
 		item, ok := mt.ttlData.Get(key)
 		if ok {
 			itemData, ok := item.(*TTLData)
-			if ok {
+			if ok && itemData != nil {
 				ttlid := itemData.TTLID
 				cid := ttlid / 100
 				ttl := ttlid % 100
