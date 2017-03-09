@@ -153,7 +153,6 @@ func (ms *MtrService) parseTTLData(data string) {
 }
 
 func (ms *MtrService) parseTTLDatum(data string) {
-	//fmt.Println(data)
 
 	hasNewline := strings.Contains(data, "\n")
 	if hasNewline {
@@ -209,12 +208,6 @@ func (ms *MtrService) parseTTLDatum(data string) {
 			}
 		}
 
-		//ttlData = &TTLData{
-		//	TTLID:  getTTLID(fullID),
-		//	err:    ttlerr,
-		//	status: status,
-		//}
-
 	}
 
 	if len(segments) > 2 {
@@ -255,19 +248,6 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	} else {
 		return
 	}
-
-	// check task
-	//if ok {
-	//	if task.checkCallback() {
-	//		// callback
-	//		cb := task.callback
-	//		if cb != nil {
-	//			cb(task)
-	//			task.clear()
-	//			ms.taskQueue.Remove(taskID)
-	//		}
-	//	}
-	//}
 
 }
 
