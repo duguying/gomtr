@@ -114,7 +114,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 		now := time.Now().UnixNano() / 1000000
 
 		// timeout
-		if now > start {
+		if now-start > 100 {
 			return 1
 		}
 
@@ -185,19 +185,42 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 		}
 	}
 
+	// get last ttl key
+	var ttlKeys []int
+	for k := range results {
+		ttlKeys = append(keys, k)
+	}
+	sort.Ints(ttlKeys)
+	lastTTLKey := ttlKeys[len(ttlKeys)-1]
+
 	summarys := map[int]map[string]string{}
-	for key, value := range results {
+	for i := 1; i <= lastTTLKey; i++ {
 		// summary
-		summarys[key] = map[string]string{
-			"Last":  fmtNumber(sortLast(value)),
-			"Avg":   fmtNumber(sortAvg(value)),
-			"Best":  fmtNumber(sortBest(value)),
-			"Wrst":  fmtNumber(sortWorst(value)),
-			"StDev": fmtNumber(sortSTDev(value)),
-			"Snt":   fmt.Sprintf("%d", sortSnt(value)),
-			"IP":    sortLastTTLData(value).ip,
-			"ttl":   fmt.Sprintf("%d", key),
+		value, ok := results[i]
+		if ok {
+			summarys[i] = map[string]string{
+				"Last":  fmtNumber(sortLast(value)),
+				"Avg":   fmtNumber(sortAvg(value)),
+				"Best":  fmtNumber(sortBest(value)),
+				"Wrst":  fmtNumber(sortWorst(value)),
+				"StDev": fmtNumber(sortSTDev(value)),
+				"Snt":   fmt.Sprintf("%d", sortSnt(value)),
+				"IP":    sortLastTTLData(value).ip,
+				"ttl":   fmt.Sprintf("%d", i),
+			}
+		} else {
+			summarys[i] = map[string]string{
+				"Last":  "?",
+				"Avg":   "?",
+				"Best":  "?",
+				"Wrst":  "?",
+				"StDev": "?",
+				"Snt":   "?",
+				"IP":    "?",
+				"ttl":   fmt.Sprintf("%d", i),
+			}
 		}
+
 	}
 	return summarys
 }
