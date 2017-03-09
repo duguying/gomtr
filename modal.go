@@ -202,6 +202,25 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 	return summarys
 }
 
+func (mt *MtrTask) GetSummaryString() string {
+	data := mt.GetSummary()
+
+	var keys []int
+	for k := range data {
+		keys = append(keys, k)
+	}
+	sort.Ints(keys)
+
+	summary := fmt.Sprintln("ttl", "ip", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+
+	for _, key := range keys {
+		item := data[key]
+		summary = summary + fmt.Sprintln(key, item["IP"], item["Snt"], item["Last"], item["Avg"], item["Best"], "Wrst", "StDev")
+	}
+
+	return summary
+}
+
 func fmtNumber(n float64) string {
 	return fmt.Sprintf("%1.01f", n/1000)
 }
