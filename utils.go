@@ -3,8 +3,8 @@ package gomtr
 import (
 	"fmt"
 	"github.com/gogather/com"
-	"strconv"
 	"math"
+	"strconv"
 )
 
 func fmtNumber(n float64) string {
