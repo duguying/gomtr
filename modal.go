@@ -51,12 +51,15 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 			// get reality id
 			rid := sendId + int64(idx)
 
-			// sync check status, it will block until ready, and return status
-			// ready:
-			//       0  get replied
-			//       1  not get replied, such as ttl-expired, continue loop
-			if mt.checkLoop(rid) == 0 {
-				break
+			// the 1st one does not check
+			if idx > 1 {
+				// sync check status, it will block until ready, and return status
+				// ready:
+				//       0  get replied
+				//       1  not get replied, such as ttl-expired, continue loop
+				if mt.checkLoop(rid) == 0 {
+					break
+				}
 			}
 
 			in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", rid, ip, idx)))
@@ -91,7 +94,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 				if data.status == "ttl-expired" {
 					// not get replied
 					return 1
-				}else if data.status == "reply" {
+				} else if data.status == "reply" {
 					// get replied
 					return 0
 				}
