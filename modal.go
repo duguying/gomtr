@@ -11,6 +11,7 @@ import (
 // parsed ttl item data
 type TTLData struct {
 	TTLID  int
+	status string
 	ipType string
 	ip     string
 	time   int64
@@ -47,14 +48,59 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 	for i := 1; i <= c; i++ {
 		sendId := id*10000 + int64(i)*100
 		for idx := 1; idx <= maxttls; idx++ {
-			in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
+			// get reality id
+			rid := sendId + int64(idx)
+
+			// sync check status, it will block until ready, and return status
+			// ready:
+			//       0  get replied
+			//       1  not get replied, such as ttl-expired, continue loop
+			if mt.checkLoop(rid) == 0 {
+				break
+			}
+
+			in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", rid, ip, idx)))
+
 			time.Sleep(time.Millisecond)
 		}
 	}
 
 }
 
-func (mt *MtrTask) check() bool {
+// check latest ttl is replied
+//    0  [    returned]  ready and get replied
+//    1  [    returned]  ready but not replied, go on
+// [-1]  [not returned]  not ready, should block
+func (mt *MtrTask) checkLoop(rid int64) int {
+	for {
+		// check ready
+		d, ok := mt.ttlData.Get(fmt.Sprintf("%d", rid))
+		if !ok || d == nil {
+			// not ready, continue
+		} else {
+			data, ok := d.(*TTLData)
+			if !ok || data == nil {
+				// not ready, continue
+			} else {
+				// ready, check replied
+				if data.status == "ttl-expired" {
+					// not get replied
+					return 1
+				}else if data.status == "reply" {
+					// get replied
+					return 0
+				}
+			}
+		}
+
+		time.Sleep(time.Microsecond)
+	}
+
+	// this will not reached
+	return 1
+}
+
+func (mt *MtrTask) checkCallback() bool {
 	for idx := 1; idx <= mt.c; idx++ {
 		for i := 1; i <= maxttls; i++ {
 			idstr := fmt.Sprintf("%02d%02d", idx, i)
