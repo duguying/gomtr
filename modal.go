@@ -206,8 +206,9 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 				"Wrst":  fmtNumber(sortWorst(value)),
 				"StDev": fmtNumber(sortSTDev(value)),
 				"Snt":   fmt.Sprintf("%d", mt.c),
-				"IP":    sortLastTTLData(value).ip,
+				"IP":    sortIP(value),
 				"ttl":   fmt.Sprintf("%d", i),
+				"raw":   sortLastTTLData(value).raw,
 			}
 		} else {
 			summarys[i] = map[string]string{
@@ -220,6 +221,7 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 				"Snt":   fmt.Sprintf("%d", mt.c),
 				"IP":    "???",
 				"ttl":   fmt.Sprintf("%d", i),
+				"raw":   "",
 			}
 		}
 

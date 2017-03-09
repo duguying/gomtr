@@ -13,7 +13,23 @@ func fmtNumber(n float64) string {
 
 func sortLastTTLData(array []*TTLData) *TTLData {
 	l := len(array)
+	for i := l - 1; i >= 0; i-- {
+		item := array[i]
+		if item.err == nil {
+			return item
+		}
+	}
+
 	return array[l-1]
+}
+
+func sortIP(array []*TTLData) string {
+	last := sortLastTTLData(array)
+	if last.err != nil {
+		return "???"
+	} else {
+		return last.ip
+	}
 }
 
 func sortLast(array []*TTLData) float64 {
@@ -31,7 +47,15 @@ func sortSntReality(array []*TTLData) int {
 		return 0
 	}
 
-	return len(array)
+	c := 0
+	for i := 0; i < len(array); i++ {
+		item := array[i]
+		if item.err == nil {
+			c++
+		}
+	}
+
+	return c
 }
 
 func sortAvg(array []*TTLData) float64 {
@@ -48,6 +72,11 @@ func sortAvg(array []*TTLData) float64 {
 			c++
 		}
 	}
+
+	if c <= 0 {
+		c = 1
+	}
+
 	return float64(result) / float64(c)
 }
 
@@ -61,6 +90,10 @@ func sortBest(array []*TTLData) float64 {
 				best = item.time
 			}
 		}
+	}
+
+	if best < 0 {
+		best = 0
 	}
 
 	return float64(best)

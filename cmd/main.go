@@ -11,7 +11,7 @@ func main() {
 	mtr := gomtr.NewMtrService()
 	go mtr.Start()
 
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 5)
 
 	iplist := []string{"183.131.7.130", "127.0.0.1", "114.215.151.25", "111.13.101.208"}
 
