@@ -44,10 +44,10 @@ func (mt *MtrTask) check() bool {
 				return false
 			}
 			data,ok:=d.(*TTLData)
-			if !ok {
+			if !ok || data == nil {
 				return false
 			}
-			fmt.Printf("[data] %v\n",data)
+			//fmt.Printf("[data] %v\n",data)
 		}
 	}
 
