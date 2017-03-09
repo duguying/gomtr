@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gogather/com"
 	"strconv"
+	"math"
 )
 
 func fmtNumber(n float64) string {
@@ -25,7 +26,7 @@ func sortLast(array []*TTLData) float64 {
 	return 0
 }
 
-func sortSnt(array []*TTLData) int {
+func sortSntReality(array []*TTLData) int {
 	if len(array) <= 0 || array == nil {
 		return 0
 	}
@@ -101,7 +102,7 @@ func sortSTDev(array []*TTLData) float64 {
 		}
 	}
 
-	return s / float64(c-1)
+	return math.Sqrt(s / float64(c-1))
 }
 
 func getTTLID(fullID int64) int {

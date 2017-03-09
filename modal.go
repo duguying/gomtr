@@ -199,23 +199,25 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 		value, ok := results[i]
 		if ok {
 			summarys[i] = map[string]string{
+				"Loss":  fmt.Sprintf("%.0f%%",float32(sortSntReality(value))/float32(mt.c)*100),
 				"Last":  fmtNumber(sortLast(value)),
 				"Avg":   fmtNumber(sortAvg(value)),
 				"Best":  fmtNumber(sortBest(value)),
 				"Wrst":  fmtNumber(sortWorst(value)),
 				"StDev": fmtNumber(sortSTDev(value)),
-				"Snt":   fmt.Sprintf("%d", sortSnt(value)),
+				"Snt":   fmt.Sprintf("%d", mt.c),
 				"IP":    sortLastTTLData(value).ip,
 				"ttl":   fmt.Sprintf("%d", i),
 			}
 		} else {
 			summarys[i] = map[string]string{
+				"Loss":  "?",
 				"Last":  "?",
 				"Avg":   "?",
 				"Best":  "?",
 				"Wrst":  "?",
 				"StDev": "?",
-				"Snt":   "?",
+				"Snt":   fmt.Sprintf("%d", mt.c),
 				"IP":    "?",
 				"ttl":   fmt.Sprintf("%d", i),
 			}
@@ -234,11 +236,11 @@ func (mt *MtrTask) GetSummaryString() string {
 	}
 	sort.Ints(keys)
 
-	summary := fmt.Sprintf("%2s %15s %2s %6s %6s %6s %6s %6s\n", "ttl", "ip", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("%2s %15s %4s %2s %6s %6s %6s %6s %6s\n", "ttl", "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintf("%2s %15s %2s %6s %6s %6s %6s %6s\n", item["ttl"], item["IP"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
+		summary = summary + fmt.Sprintf("%2s %15s %4s %2s %6s %6s %6s %6s %6s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
 	}
 
 	return summary
