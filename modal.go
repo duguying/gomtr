@@ -91,11 +91,14 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 		d, ok := mt.ttlData.Get(fmt.Sprintf("%d", tllID))
 		if !ok || d == nil {
 			// not ready, continue
+			fmt.Println("not ready d")
 		} else {
 			data, ok := d.(*TTLData)
 			if !ok || data == nil {
 				// not ready, continue
+				fmt.Println("not ready data")
 			} else {
+				fmt.Println("ready")
 				// ready, check replied
 				if data.status == "ttl-expired" {
 					// not get replied
