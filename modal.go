@@ -215,7 +215,7 @@ func (mt *MtrTask) GetSummaryString() string {
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintf("%2s %15s %2s %6s %6s %6s %6s %6s\n", key, item["IP"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
+		summary = summary + fmt.Sprintf("%2s %15s %2s %6s %6s %6s %6s %6s\n", item["ttl"], item["IP"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
 	}
 
 	return summary
