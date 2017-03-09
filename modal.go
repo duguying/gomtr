@@ -114,7 +114,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 		now := time.Now().UnixNano() / 1000000
 
 		// timeout
-		if now-start > 200 {
+		if now-start > 500 {
 			return 1
 		}
 
