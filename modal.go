@@ -29,6 +29,7 @@ type MtrTask struct {
 	callback func(interface{})
 	c        int
 	ttlData  *safemap.SafeMap // item is ttlData, key is ttl
+	ttlChan  chan *TTLData
 }
 
 func (mt *MtrTask) save(ttl int, data *TTLData) {
@@ -85,30 +86,43 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 // [-1]  [not returned]  not ready, should block
 func (mt *MtrTask) checkLoop(rid int64) int {
 	for {
-		// get tllID
-		tllID := getTTLID(rid)
-
-		// check ready
-		d, ok := mt.ttlData.Get(fmt.Sprintf("%d", tllID))
-		if !ok || d == nil {
-			// not ready, continue
-		} else {
-			data, ok := d.(*TTLData)
-			if !ok || data == nil {
-				// not ready, continue
-			} else {
-				// ready, check replied
-				if data.status == "ttl-expired" || data.err != nil {
+		select {
+		case ttlData := <-mt.ttlChan:
+			{
+				if ttlData.status == "ttl-expired" || ttlData.err != nil {
 					// not get replied
 					return 1
-				} else if data.status == "reply" {
+				} else if ttlData.status == "reply" {
 					// get replied
 					return 0
 				}
 			}
 		}
 
-		time.Sleep(time.Microsecond)
+		//// get tllID
+		//tllID := getTTLID(rid)
+		//
+		//// check ready
+		//d, ok := mt.ttlData.Get(fmt.Sprintf("%d", tllID))
+		//if !ok || d == nil {
+		//	// not ready, continue
+		//} else {
+		//	data, ok := d.(*TTLData)
+		//	if !ok || data == nil {
+		//		// not ready, continue
+		//	} else {
+		//		// ready, check replied
+		//		if data.status == "ttl-expired" || data.err != nil {
+		//			// not get replied
+		//			return 1
+		//		} else if data.status == "reply" {
+		//			// get replied
+		//			return 0
+		//		}
+		//	}
+		//}
+		//
+		//time.Sleep(time.Microsecond)
 	}
 
 	// this will not reached
