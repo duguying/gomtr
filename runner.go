@@ -241,17 +241,17 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	}
 
 	// check task
-	if ok {
-		if task.checkCallback() {
-			// callback
-			cb := task.callback
-			if cb != nil {
-				cb(task)
-				task.clear()
-				ms.taskQueue.Remove(taskID)
-			}
-		}
-	}
+	//if ok {
+	//	if task.checkCallback() {
+	//		// callback
+	//		cb := task.callback
+	//		if cb != nil {
+	//			cb(task)
+	//			task.clear()
+	//			ms.taskQueue.Remove(taskID)
+	//		}
+	//	}
+	//}
 
 }
 

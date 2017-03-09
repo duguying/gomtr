@@ -65,6 +65,11 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 		}
 	}
 
+	// callback
+	mt.callback(mt)
+	mt.clear()
+	// todo: remove this task from task queue
+
 }
 
 // check latest ttl is replied
