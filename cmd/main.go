@@ -1,10 +1,3 @@
-# gomtr
-
-gomtr is a golang wrap for mtr-packet with born for solve concurrency mtr calling.
-
-### usage
-
-```golang
 package main
 
 import (
@@ -30,9 +23,3 @@ func main() {
 		})
 	}
 }
-
-```
-
-### license
-
-MIT License

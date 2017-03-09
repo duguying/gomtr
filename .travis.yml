@@ -9,6 +9,7 @@ script:
   - unzip master.zip
   - cd mtr-master
   - ./bootstrap.sh && ./configure && make
-  - cp ./mtr-packet ../
-  - cd ..
-  - go test -v -test.run Test_Mtr
+  - cp ./mtr-packet ../cmd/
+  - cd ../cmd
+  - go build
+  - sudo ./cmd
