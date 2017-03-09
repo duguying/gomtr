@@ -211,14 +211,14 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 			}
 		} else {
 			summarys[i] = map[string]string{
-				"Loss":  "?",
-				"Last":  "?",
-				"Avg":   "?",
-				"Best":  "?",
-				"Wrst":  "?",
-				"StDev": "?",
+				"Loss":  "100%",
+				"Last":  "0.0",
+				"Avg":   "0.0",
+				"Best":  "0.0",
+				"Wrst":  "0.0",
+				"StDev": "0.0",
 				"Snt":   fmt.Sprintf("%d", mt.c),
-				"IP":    "?",
+				"IP":    "???",
 				"ttl":   fmt.Sprintf("%d", i),
 			}
 		}
@@ -236,11 +236,11 @@ func (mt *MtrTask) GetSummaryString() string {
 	}
 	sort.Ints(keys)
 
-	summary := fmt.Sprintf("%2s %15s %4s %2s %6s %6s %6s %6s %6s\n", "ttl", "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("%2s %25s %9s %7s %8s %8s %8s %8s %8s\n", "ttl", "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintf("%2s %15s %4s %2s %6s %6s %6s %6s %6s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
+		summary = summary + fmt.Sprintf("%2s %25s %9s %7s %8s %8s %8s %8s %8s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
 	}
 
 	return summary
