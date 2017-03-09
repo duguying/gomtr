@@ -8,7 +8,7 @@ import (
 )
 
 func fmtNumber(n float64) string {
-	return fmt.Sprintf("%1.01f", n/1000)
+	return fmt.Sprintf("%.01f", n/1000)
 }
 
 func sortLastTTLData(array []*TTLData) *TTLData {
@@ -100,6 +100,10 @@ func sortSTDev(array []*TTLData) float64 {
 			delta := d * d
 			s = s + delta
 		}
+	}
+
+	if c <= 0 {
+		c = 1
 	}
 
 	return math.Sqrt(s / float64(c-1))
