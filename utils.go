@@ -106,7 +106,12 @@ func sortSTDev(array []*TTLData) float64 {
 		c = 1
 	}
 
-	return math.Sqrt(s / float64(c-1))
+	stdev := math.Sqrt(s / float64(c-1))
+	if math.IsNaN(stdev) {
+		stdev = float64(0)
+	}
+
+	return stdev
 }
 
 func getTTLID(fullID int64) int {
