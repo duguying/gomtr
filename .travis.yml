@@ -4,9 +4,9 @@ go:
 install:
   - go get
 script:
-  - wget https://github.com/traviscross/mtr/archive/v0.87.zip
-  - unzip v0.87.zip
-  - cd mtr-0.87
+  - wget https://github.com/traviscross/mtr/archive/master.zip
+  - unzip master.zip
+  - cd mtr-master
   - ./bootstrap.sh && ./configure && make
   - cp ./mtr-packet ../
   - sudo go test
