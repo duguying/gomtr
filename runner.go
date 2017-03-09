@@ -135,6 +135,7 @@ func (ms *MtrService) send(id int64, ip string, c int) {
 		sendId := id*10000 + int64(i)*100
 		for idx := 1; idx <= maxttls; idx++ {
 			ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
+			time.Sleep(time.Millisecond)
 		}
 	}
 
@@ -205,6 +206,36 @@ func (ms *MtrService) parseTTLDatum(data string) {
 			ttlData = &TTLData{
 				TTLID: ms.getTTLID(fullID),
 				err:   errors.New("no reply"),
+			}
+		} else if segments[1] == "probes-exhausted" {
+			ttlData = &TTLData{
+				TTLID: ms.getTTLID(fullID),
+				err:   errors.New("probes-exhausted"),
+			}
+		} else if segments[1] == "network-down" {
+			ttlData = &TTLData{
+				TTLID: ms.getTTLID(fullID),
+				err:   errors.New("network-down"),
+			}
+		} else if segments[1] == "permission-denied" {
+			ttlData = &TTLData{
+				TTLID: ms.getTTLID(fullID),
+				err:   errors.New("permission-denied"),
+			}
+		} else if segments[1] == "no-route" {
+			ttlData = &TTLData{
+				TTLID: ms.getTTLID(fullID),
+				err:   errors.New("no-route"),
+			}
+		} else if segments[1] == "invalid-argument" {
+			ttlData = &TTLData{
+				TTLID: ms.getTTLID(fullID),
+				err:   errors.New("invalid-argument"),
+			}
+		} else if segments[1] == "feature-support"{
+			ttlData = &TTLData{
+				TTLID: ms.getTTLID(fullID),
+				err:   errors.New("feature-support"),
 			}
 		}
 	}
