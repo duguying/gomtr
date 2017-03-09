@@ -120,27 +120,6 @@ func (ms *MtrService) startup() {
 
 }
 
-func (ms *MtrService) send(id int64, ip string, c int) {
-	defer func() {
-		recover()
-	}()
-
-	if c > 100 {
-		c = 99
-	} else if c < 1 {
-		c = 1
-	}
-
-	for i := 1; i <= c; i++ {
-		sendId := id*10000 + int64(i)*100
-		for idx := 1; idx <= maxttls; idx++ {
-			ms.in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
-			time.Sleep(time.Millisecond)
-		}
-	}
-
-}
-
 func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 
 	task := &MtrTask{
@@ -152,7 +131,7 @@ func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 
 	ms.taskQueue.Put(fmt.Sprintf("%d", ms.index), task)
 
-	ms.send(ms.index, ip, c)
+	task.send(ms.in, ms.index, ip, c)
 
 	ms.index++
 
@@ -232,7 +211,7 @@ func (ms *MtrService) parseTTLDatum(data string) {
 				TTLID: ms.getTTLID(fullID),
 				err:   errors.New("invalid-argument"),
 			}
-		} else if segments[1] == "feature-support"{
+		} else if segments[1] == "feature-support" {
 			ttlData = &TTLData{
 				TTLID: ms.getTTLID(fullID),
 				err:   errors.New("feature-support"),
@@ -260,11 +239,11 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	taskID := fmt.Sprintf("%d", ms.getRealID(fullID))
 	taskRaw, ok := ms.taskQueue.Get(taskID)
 	var task *MtrTask = nil
-	if ok && taskRaw!=nil {
+	if ok && taskRaw != nil {
 		task = taskRaw.(*MtrTask)
 		ttlID := ms.getTTLID(fullID)
 		task.save(ttlID, ttlData)
-	}else{
+	} else {
 		return
 	}
 

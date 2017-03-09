@@ -3,7 +3,9 @@ package gomtr
 import (
 	"fmt"
 	"github.com/gogather/safemap"
+	"io"
 	"strconv"
+	"time"
 )
 
 // parsed ttl item data
@@ -21,14 +23,35 @@ func (td *TTLData) String() string {
 
 // task
 type MtrTask struct {
-	id        int64
-	callback  func(interface{})
-	c         int
-	ttlData   *safemap.SafeMap // item is ttlData, key is ttl
+	id       int64
+	callback func(interface{})
+	c        int
+	ttlData  *safemap.SafeMap // item is ttlData, key is ttl
 }
 
 func (mt *MtrTask) save(ttl int, data *TTLData) {
 	mt.ttlData.Put(fmt.Sprintf("%d", ttl), data)
+}
+
+func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
+	defer func() {
+		recover()
+	}()
+
+	if c > 100 {
+		c = 99
+	} else if c < 1 {
+		c = 1
+	}
+
+	for i := 1; i <= c; i++ {
+		sendId := id*10000 + int64(i)*100
+		for idx := 1; idx <= maxttls; idx++ {
+			in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", sendId+int64(idx), ip, idx)))
+			time.Sleep(time.Millisecond)
+		}
+	}
+
 }
 
 func (mt *MtrTask) check() bool {
@@ -43,7 +66,7 @@ func (mt *MtrTask) check() bool {
 			if !ok || d == nil {
 				return false
 			}
-			data,ok:=d.(*TTLData)
+			data, ok := d.(*TTLData)
 			if !ok || data == nil {
 				return false
 			}
