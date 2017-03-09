@@ -188,7 +188,7 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 	// get last ttl key
 	var ttlKeys []int
 	for k := range results {
-		ttlKeys = append(keys, k)
+		ttlKeys = append(ttlKeys, k)
 	}
 	sort.Ints(ttlKeys)
 	lastTTLKey := ttlKeys[len(ttlKeys)-1]

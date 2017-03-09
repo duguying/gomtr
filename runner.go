@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/gogather/com"
 	"github.com/gogather/safemap"
 	"io"
 	"os/exec"
