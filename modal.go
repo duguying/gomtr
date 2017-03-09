@@ -84,6 +84,8 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 //    1  [    returned]  ready but not replied, go on
 // [-1]  [not returned]  not ready, should block
 func (mt *MtrTask) checkLoop(rid int64) int {
+	start := time.Now().UnixNano() / 1000000
+
 	for {
 		// get tllID
 		tllID := getTTLID(rid)
@@ -109,7 +111,14 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 			}
 		}
 
-		time.Sleep(time.Microsecond)
+		now := time.Now().UnixNano() / 1000000
+
+		// timeout
+		if now > start {
+			return 1
+		}
+
+		time.Sleep(1)
 	}
 
 	// this will not reached
