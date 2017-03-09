@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gogather/safemap"
 	"io"
-	"strconv"
 	"time"
 )
 
@@ -99,7 +98,6 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 			if !ok || data == nil {
 				// not ready, continue
 			} else {
-				fmt.Println("[ready]", data.status, data.err, data.raw)
 				// ready, check replied
 				if data.status == "ttl-expired" || data.err != nil {
 					// not get replied
@@ -123,29 +121,6 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 
 	// this will not reached
 	return 1
-}
-
-func (mt *MtrTask) checkCallback() bool {
-	for idx := 1; idx <= mt.c; idx++ {
-		for i := 1; i <= maxttls; i++ {
-			idstr := fmt.Sprintf("%02d%02d", idx, i)
-			id, e := strconv.Atoi(idstr)
-			if e != nil {
-				return false
-			}
-			d, ok := mt.ttlData.Get(fmt.Sprintf("%d", id))
-			if !ok || d == nil {
-				return false
-			}
-			data, ok := d.(*TTLData)
-			if !ok || data == nil {
-				return false
-			}
-			//fmt.Printf("[data] %v\n",data)
-		}
-	}
-
-	return true
 }
 
 func (mt *MtrTask) clear() {
