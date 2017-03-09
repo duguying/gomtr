@@ -10,4 +10,5 @@ script:
   - cd mtr-master
   - ./bootstrap.sh && ./configure && make
   - cp ./mtr-packet ../
+  - cd ..
   - go test -v -test.run Test_Mtr
