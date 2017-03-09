@@ -167,6 +167,10 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	var ttlTime int64
 	//var err error
 
+	if len(segments) <= 1 {
+		return
+	}
+
 	if len(segments) >= 1 {
 		idInt, err := strconv.Atoi(segments[0])
 		if err != nil {
@@ -219,16 +223,16 @@ func (ms *MtrService) parseTTLDatum(data string) {
 		} else {
 			ttlTime = int64(ttlTimeInt)
 		}
+	}
 
-		ttlData = &TTLData{
-			TTLID:  getTTLID(fullID),
-			ipType: segments[2],
-			ip:     segments[3],
-			err:    ttlerr,
-			status: status,
-			raw:    data,
-			time:   ttlTime,
-		}
+	ttlData = &TTLData{
+		TTLID:  getTTLID(fullID),
+		ipType: segments[2],
+		ip:     segments[3],
+		err:    ttlerr,
+		status: status,
+		raw:    data,
+		time:   ttlTime,
 	}
 
 	// store
