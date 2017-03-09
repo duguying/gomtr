@@ -97,7 +97,6 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 			if !ok || data == nil {
 				// not ready, continue
 			} else {
-				fmt.Println("[ready]", data.status, data.err, data.raw)
 				// ready, check replied
 				if data.status == "ttl-expired" || data.err != nil {
 					// not get replied
