@@ -2,7 +2,6 @@ package gomtr
 
 import (
 	"fmt"
-	"github.com/gogather/com"
 	"github.com/gogather/com/log"
 	"testing"
 	"time"
@@ -19,8 +18,8 @@ func Test_Mtr(t *testing.T) {
 		mtr.Request("183.131.7.130", 10, func(response interface{}) {
 			//fmt.Println(response)
 			task := response.(*MtrTask)
-			fmt.Println("[ID]", task.id)
-			log.Println(task.GetSummaryString())
+			log.Blueln("[ID]", task.id)
+			fmt.Println(task.GetSummaryString())
 		})
 		i++
 		//time.Sleep(time.Second)

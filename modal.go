@@ -211,11 +211,11 @@ func (mt *MtrTask) GetSummaryString() string {
 	}
 	sort.Ints(keys)
 
-	summary := fmt.Sprintln("ttl", "ip", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("%2s %15s %2s %6s %6s %6s %6s %6s\n", "ttl", "ip", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintln(key, item["IP"], item["Snt"], item["Last"], item["Avg"], item["Best"], "Wrst", "StDev")
+		summary = summary + fmt.Sprintf("%2s %15s %2s %6s %6s %6s %6s %6s\n", key, item["IP"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
 	}
 
 	return summary
