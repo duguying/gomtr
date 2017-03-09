@@ -127,7 +127,6 @@ func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 		callback: callback,
 		c:        c,
 		ttlData:  safemap.New(),
-		ttlChan:  make(chan *TTLData, 1000),
 	}
 
 	ms.taskQueue.Put(fmt.Sprintf("%d", ms.index), task)
@@ -237,7 +236,6 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	if ok && taskRaw != nil {
 		task = taskRaw.(*MtrTask)
 		ttlID := getTTLID(fullID)
-		task.ttlChan <- ttlData
 		task.save(ttlID, ttlData)
 	} else {
 		return
