@@ -205,7 +205,7 @@ func (ms *MtrService) parseTTLDatum(data string) {
 		}
 
 		ttlData = &TTLData{
-			TTLID:  ms.getTTLID(fullID),
+			TTLID:  getTTLID(fullID),
 			err:    ttlerr,
 			status: status,
 		}
@@ -221,7 +221,7 @@ func (ms *MtrService) parseTTLDatum(data string) {
 		}
 
 		ttlData = &TTLData{
-			TTLID:  ms.getTTLID(fullID),
+			TTLID:  getTTLID(fullID),
 			ipType: segments[2],
 			ip:     segments[3],
 			time:   ttlTime,
@@ -229,12 +229,12 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	}
 
 	// store
-	taskID := fmt.Sprintf("%d", ms.getRealID(fullID))
+	taskID := fmt.Sprintf("%d", getRealID(fullID))
 	taskRaw, ok := ms.taskQueue.Get(taskID)
 	var task *MtrTask = nil
 	if ok && taskRaw != nil {
 		task = taskRaw.(*MtrTask)
-		ttlID := ms.getTTLID(fullID)
+		ttlID := getTTLID(fullID)
 		task.save(ttlID, ttlData)
 	} else {
 		return
@@ -255,7 +255,7 @@ func (ms *MtrService) parseTTLDatum(data string) {
 
 }
 
-func (ms *MtrService) getTTLID(fullID int64) int {
+func getTTLID(fullID int64) int {
 	idStr := fmt.Sprintf("%d", fullID)
 	length := len(idStr)
 	ttlStr := com.SubString(idStr, length-4, 4)
@@ -266,6 +266,6 @@ func (ms *MtrService) getTTLID(fullID int64) int {
 	return ttl
 }
 
-func (ms *MtrService) getRealID(fullID int64) int64 {
+func getRealID(fullID int64) int64 {
 	return fullID / 10000
 }

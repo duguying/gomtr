@@ -84,8 +84,11 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 // [-1]  [not returned]  not ready, should block
 func (mt *MtrTask) checkLoop(rid int64) int {
 	for {
+		// get tllID
+		tllID := getTTLID(rid)
+
 		// check ready
-		d, ok := mt.ttlData.Get(fmt.Sprintf("%d", rid))
+		d, ok := mt.ttlData.Get(fmt.Sprintf("%d", tllID))
 		if !ok || d == nil {
 			// not ready, continue
 		} else {
