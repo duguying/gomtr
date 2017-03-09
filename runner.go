@@ -43,7 +43,7 @@ func (ms *MtrService) Start() {
 
 func (ms *MtrService) startup() {
 
-	cmd := exec.Command("./mtr-packet")
+	cmd := exec.Command("sudo ./mtr-packet")
 
 	var e error
 
