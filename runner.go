@@ -183,15 +183,10 @@ func (ms *MtrService) parseTTLDatum(data string) {
 
 	if len(segments) > 1 {
 
+		fmt.Println(segments[1])
+
 		switch segments[1] {
-		case "command-parse-error":
-		case "no-reply":
-		case "probes-exhausted":
-		case "network-down":
-		case "permission-denied":
-		case "no-route":
-		case "invalid-argument":
-		case "feature-support":
+		case "command-parse-error", "no-reply", "probes-exhausted", "network-down", "permission-denied", "no-route", "invalid-argument", "feature-support":
 			{
 				ttlerr = errors.New(segments[1])
 				break
