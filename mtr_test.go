@@ -20,7 +20,7 @@ func Test_Mtr(t *testing.T) {
 			//fmt.Println(response)
 			task := response.(*MtrTask)
 			fmt.Println("[ID]", task.id)
-			log.Blueln(com.JsonEncode(task.GetResult()))
+			log.Blueln(com.JsonEncode(task.GetSummary()))
 		})
 		i++
 		//time.Sleep(time.Second)

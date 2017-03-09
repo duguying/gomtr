@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/gogather/safemap"
 	"io"
+	"sort"
+	"strconv"
 	"time"
 )
 
@@ -129,7 +131,7 @@ func (mt *MtrTask) clear() {
 	}
 }
 
-func (mt *MtrTask) GetResult() map[int]map[int]int64 {
+func (mt *MtrTask) GetResultMap() map[int]map[int]int64 {
 	results := map[int]map[int]int64{}
 	for key, _ := range mt.ttlData.GetMap() {
 		item, ok := mt.ttlData.Get(key)
@@ -152,4 +154,148 @@ func (mt *MtrTask) GetResult() map[int]map[int]int64 {
 		}
 	}
 	return results
+}
+
+func (mt *MtrTask) GetSummary() map[int]map[string]string {
+	results := map[int][]*TTLData{}
+
+	var keys []int
+	for ks := range mt.ttlData.GetMap() {
+		k, _ := strconv.Atoi(ks)
+		keys = append(keys, k)
+	}
+	sort.Ints(keys)
+
+	for _, key := range keys {
+		item, ok := mt.ttlData.Get(fmt.Sprintf("%d", key))
+		if ok {
+			itemData, ok := item.(*TTLData)
+			if ok && itemData != nil {
+				ttlid := itemData.TTLID
+				ttl := ttlid % 100
+
+				// put data
+				array, ok := results[ttl]
+				if ok {
+					results[ttl] = append(array, itemData)
+				} else {
+					results[ttl] = []*TTLData{itemData}
+				}
+			}
+		}
+	}
+
+	summarys := map[int]map[string]string{}
+	for key, value := range results {
+		// summary
+		summarys[key] = map[string]string{
+			"Last":  fmtNumber(sortLast(value)),
+			"Avg":   fmtNumber(sortAvg(value)),
+			"Best":  fmtNumber(sortBest(value)),
+			"Wrst":  fmtNumber(sortWorst(value)),
+			"StDev": fmtNumber(sortSTDev(value)),
+			"Snt":   fmt.Sprintf("%d", sortSnt(value)),
+			"IP":    sortLastTTLData(value).ip,
+			"ttl":   fmt.Sprintf("%d", key),
+		}
+	}
+	return summarys
+}
+
+func fmtNumber(n float64) string {
+	return fmt.Sprintf("%1.01f", n/1000)
+}
+
+func sortLastTTLData(array []*TTLData) *TTLData {
+	l := len(array)
+	return array[l-1]
+}
+
+func sortLast(array []*TTLData) float64 {
+	for i := len(array) - 1; i >= 0; i-- {
+		item := array[i]
+		if item.err == nil {
+			return float64(item.time)
+		}
+	}
+	return 0
+}
+
+func sortSnt(array []*TTLData) int {
+	if len(array) <= 0 || array == nil {
+		return 0
+	}
+
+	return len(array)
+}
+
+func sortAvg(array []*TTLData) float64 {
+	if len(array) <= 0 || array == nil {
+		return 0
+	}
+
+	var result int64 = 0
+	c := 0
+	for i := 0; i < len(array); i++ {
+		item := array[i]
+		if item.err == nil {
+			result = result + item.time
+			c++
+		}
+	}
+	return float64(result) / float64(c)
+}
+
+func sortBest(array []*TTLData) float64 {
+	var best int64 = -1
+
+	for i := 0; i < len(array); i++ {
+		item := array[i]
+		if item.err == nil {
+			if item.time > best {
+				best = item.time
+			}
+		}
+	}
+
+	return float64(best)
+}
+
+func sortWorst(array []*TTLData) float64 {
+	var worst int64 = array[0].time
+
+	for i := 0; i < len(array); i++ {
+		item := array[i]
+		if item.err == nil {
+			if item.time < worst {
+				worst = item.time
+			}
+		}
+	}
+
+	return float64(worst)
+}
+
+// 标准偏差统计
+func sortSTDev(array []*TTLData) float64 {
+	if len(array) <= 0 || array == nil {
+		return 0
+	}
+
+	avg := sortAvg(array)
+
+	var s float64 = 0
+	var c int = 0
+	for i := 0; i < len(array); i++ {
+		item := array[i]
+		if item.err == nil {
+			c++
+			itemTime := float64(item.time)
+			d := itemTime - avg
+			delta := d * d
+			s = s + delta
+		}
+	}
+
+	return s / float64(c-1)
 }
