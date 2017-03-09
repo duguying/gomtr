@@ -169,11 +169,11 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	var ipType string
 	var ip string
 
-	if len(segments) <= 1 {
+	if len(segments) <= 0 {
 		return
 	}
 
-	if len(segments) > 1 {
+	if len(segments) > 0 {
 		idInt, err := strconv.Atoi(segments[0])
 		if err != nil {
 			idInt = 0
@@ -181,7 +181,7 @@ func (ms *MtrService) parseTTLDatum(data string) {
 		fullID = int64(idInt)
 	}
 
-	if len(segments) > 2 {
+	if len(segments) > 1 {
 
 		switch segments[1] {
 		case "command-parse-error":
@@ -218,7 +218,7 @@ func (ms *MtrService) parseTTLDatum(data string) {
 		ip = segments[3]
 	}
 
-	if len(segments) >= 6 {
+	if len(segments) > 5 {
 		ttlTimeInt, err := strconv.Atoi(segments[5])
 		if err != nil {
 			ttlTimeInt = 0
