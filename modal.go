@@ -15,6 +15,7 @@ type TTLData struct {
 	ipType string
 	ip     string
 	time   int64
+	raw    string
 	err    error
 }
 

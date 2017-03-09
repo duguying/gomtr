@@ -175,9 +175,9 @@ func (ms *MtrService) parseTTLDatum(data string) {
 		fullID = int64(idInt)
 	}
 
+	var ttlerr error
+	var status string
 	if len(segments) >= 2 {
-		var ttlerr error
-		var status string
 
 		switch segments[1] {
 		case "command-parse-error":
@@ -204,11 +204,11 @@ func (ms *MtrService) parseTTLDatum(data string) {
 			}
 		}
 
-		ttlData = &TTLData{
-			TTLID:  getTTLID(fullID),
-			err:    ttlerr,
-			status: status,
-		}
+		//ttlData = &TTLData{
+		//	TTLID:  getTTLID(fullID),
+		//	err:    ttlerr,
+		//	status: status,
+		//}
 
 	}
 
@@ -224,6 +224,9 @@ func (ms *MtrService) parseTTLDatum(data string) {
 			TTLID:  getTTLID(fullID),
 			ipType: segments[2],
 			ip:     segments[3],
+			err:    ttlerr,
+			status: status,
+			raw:    data,
 			time:   ttlTime,
 		}
 	}
