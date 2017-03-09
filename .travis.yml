@@ -9,4 +9,4 @@ script:
   - cd mtr-0.87
   - ./bootstrap.sh && ./configure && make
   - cp ./mtr-packet ../
-  - go test
+  - sudo go test
