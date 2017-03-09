@@ -47,6 +47,7 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 
 	for i := 1; i <= c; i++ {
 		sendId := id*10000 + int64(i)*100
+		var prevRid int64 = 0
 		for idx := 1; idx <= maxttls; idx++ {
 			// get reality id
 			rid := sendId + int64(idx)
@@ -57,10 +58,12 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 				// ready:
 				//       0  get replied
 				//       1  not get replied, such as ttl-expired, continue loop
-				if mt.checkLoop(rid) == 0 {
+				if mt.checkLoop(prevRid) == 0 {
 					break
 				}
 			}
+
+			prevRid = rid
 
 			in.Write([]byte(fmt.Sprintf("%d send-probe ip-4 %s ttl %d\n", rid, ip, idx)))
 
