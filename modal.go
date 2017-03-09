@@ -43,6 +43,11 @@ func (mt *MtrTask) check() bool {
 			if !ok || d == nil {
 				return false
 			}
+			data,ok:=d.(*TTLData)
+			if !ok {
+				return false
+			}
+			fmt.Printf("[data] %v\n",data)
 		}
 	}
 
