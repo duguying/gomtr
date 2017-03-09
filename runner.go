@@ -242,18 +242,3 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	}
 
 }
-
-func getTTLID(fullID int64) int {
-	idStr := fmt.Sprintf("%d", fullID)
-	length := len(idStr)
-	ttlStr := com.SubString(idStr, length-4, 4)
-	ttl, e := strconv.Atoi(ttlStr)
-	if e != nil {
-		ttl = 0
-	}
-	return ttl
-}
-
-func getRealID(fullID int64) int64 {
-	return fullID / 10000
-}
