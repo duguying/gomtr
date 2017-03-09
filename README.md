@@ -1,4 +1,4 @@
-# gomtr
+# gomtr [![Build Status](https://travis-ci.org/duguying/gomtr.svg?branch=master)](https://travis-ci.org/duguying/gomtr)
 
 gomtr is a golang wrap for mtr-packet with born for solve concurrency mtr calling.
 
