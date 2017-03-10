@@ -22,4 +22,6 @@ func main() {
 			fmt.Println(task.GetSummaryDecorateString())
 		})
 	}
+
+	time.Sleep(time.Minute)
 }
