@@ -16,28 +16,30 @@ const maxttls = 50
 
 // service
 type MtrService struct {
-	taskQueue *safemap.SafeMap
-	flag      int64
-	index     int64
-	in        io.WriteCloser
-	out       io.ReadCloser
-	outChan   chan string
+	taskQueue     *safemap.SafeMap
+	flag          int64
+	index         int64
+	in            io.WriteCloser
+	out           io.ReadCloser
+	outChan       chan string
 	mtrPacketPath string
 }
 
+// NewMtrService new a mtr service
+// path - mtr-packet executable path
 func NewMtrService(path string) *MtrService {
 	return &MtrService{
-		taskQueue: safemap.New(),
-		flag:      102400,
-		index:     1,
-		in:        nil,
-		out:       nil,
-		outChan:   make(chan string, 1000),
-		mtrPacketPath:path,
+		taskQueue:     safemap.New(),
+		flag:          102400,
+		index:         1,
+		in:            nil,
+		out:           nil,
+		outChan:       make(chan string, 1000),
+		mtrPacketPath: path,
 	}
 }
 
-// start service and wait mtr-packet stdio
+// Start start service and wait mtr-packet stdio
 func (ms *MtrService) Start() {
 	go ms.startup()
 	time.Sleep(time.Second)
@@ -121,7 +123,15 @@ func (ms *MtrService) startup() {
 
 }
 
+// Request send a task request
+// ip       - the test ip
+// c        - repeat time, such as mtr tool argument c
+// callback - just callback after task ready
 func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
+
+	if c <= 0 {
+		c = 1
+	}
 
 	task := &MtrTask{
 		id:       ms.index,
