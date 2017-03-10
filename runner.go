@@ -31,7 +31,7 @@ func NewMtrService(path string) *MtrService {
 	return &MtrService{
 		taskQueue:     safemap.New(),
 		flag:          102400,
-		index:         1,
+		index:         0,
 		in:            nil,
 		out:           nil,
 		outChan:       make(chan string, 1000),
@@ -129,26 +129,28 @@ func (ms *MtrService) startup() {
 // callback - just callback after task ready
 func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 
+	ms.index++
+
+	taskID := ms.index
+
+	if ms.index > ms.flag {
+		ms.index = 1
+	}
+
 	if c <= 0 {
 		c = 1
 	}
 
 	task := &MtrTask{
-		id:       ms.index,
+		id:       taskID,
 		callback: callback,
 		c:        c,
 		ttlData:  safemap.New(),
 	}
 
-	ms.index++
+	ms.taskQueue.Put(fmt.Sprintf("%d", taskID), task)
 
-	ms.taskQueue.Put(fmt.Sprintf("%d", ms.index), task)
-
-	task.send(ms.in, ms.index, ip, c)
-
-	if ms.index > ms.flag {
-		ms.index = 1
-	}
+	task.send(ms.in, taskID, ip, c)
 
 }
 

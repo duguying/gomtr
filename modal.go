@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gogather/safemap"
 	"io"
+	"os"
 	"sort"
 	"strconv"
 	"time"
@@ -19,10 +20,6 @@ type TTLData struct {
 	raw          string
 	err          error
 	receivedTime time.Time
-}
-
-func (td *TTLData) String() string {
-	return fmt.Sprintf("")
 }
 
 // task
@@ -78,12 +75,13 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 		}
 	}
 
+	time.Sleep(time.Millisecond * 500)
+
 	mt.CostTime = time.Now().UnixNano() - mt.sendTime.UnixNano()
 
 	// callback
 	mt.callback(mt)
 	mt.clear()
-	// todo: remove this task from task queue
 
 }
 
@@ -111,7 +109,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 				if data.status == "reply" {
 					// get replied
 					return 0
-				}else if data.status == "ttl-expired" || data.err != nil {
+				} else if data.status == "ttl-expired" || data.err != nil {
 					// not get replied
 					return 1
 				}
@@ -121,7 +119,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 		now := time.Now().UnixNano() / 1000000
 
 		// timeout
-		if now-start > 500 {
+		if now-start > 1 {
 			//fmt.Printf("[timeout:%d][rid:%d]\n", now-start, rid)
 			return 1
 		}
@@ -169,7 +167,10 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 
 	var keys []int
 	for ks := range mt.ttlData.GetMap() {
-		k, _ := strconv.Atoi(ks)
+		k, e := strconv.Atoi(ks)
+		if e != nil {
+			//fmt.Println("e", e)
+		}
 		keys = append(keys, k)
 	}
 	sort.Ints(keys)
@@ -199,7 +200,10 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 		ttlKeys = append(ttlKeys, k)
 	}
 	sort.Ints(ttlKeys)
-	lastTTLKey := ttlKeys[len(ttlKeys)-1]
+	lastTTLKey := 0
+	if len(ttlKeys) > 0 {
+		lastTTLKey = ttlKeys[len(ttlKeys)-1]
+	}
 
 	summarys := map[int]map[string]string{}
 	for i := 1; i <= lastTTLKey; i++ {
@@ -233,6 +237,10 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 			}
 		}
 
+		if sortHasReply(value) {
+			break
+		}
+
 	}
 	return summarys
 }
@@ -246,12 +254,25 @@ func (mt *MtrTask) GetSummaryString() string {
 	}
 	sort.Ints(keys)
 
-	summary := fmt.Sprintf("%3s %20s %9s %7s %8s %8s %8s %8s %8s\n", "ttl", "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	hostname, err := os.Hostname()
+	if err != nil {
+		hostname = "127.0.0.1"
+	}
+
+	summary := fmt.Sprintf("Start: %s\n", getMtrStartTime())
+	summary = summary + fmt.Sprintf("%-28s %9s %4s %6s %6s %6s %6s %6s\n", "HOST: "+hostname, "Loss%", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintf("%3s %20s %9s %7s %8s %8s %8s %8s %8s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
+		summary = summary + fmt.Sprintf("%3s.|-- %-20s %9s %4s %6s %6s %6s %6s %6s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
 	}
 
+	return summary
+}
+
+func (mt *MtrTask) GetSummaryDecorateString() string {
+	table := mt.GetSummaryString()
+
+	summary := fmt.Sprintf("[ID] %d\n", mt.id) + table + "\n"
 	return summary
 }

@@ -5,10 +5,21 @@ import (
 	"github.com/gogather/com"
 	"math"
 	"strconv"
+	"time"
 )
 
 func fmtNumber(n float64) string {
 	return fmt.Sprintf("%.01f", n/1000)
+}
+
+func sortHasReply(array []*TTLData) bool {
+	for i := len(array) - 1; i >= 0; i-- {
+		item := array[i]
+		if item.status == "reply" {
+			return true
+		}
+	}
+	return false
 }
 
 func sortLastTTLData(array []*TTLData) *TTLData {
@@ -160,4 +171,11 @@ func getTTLID(fullID int64) int {
 
 func getRealID(fullID int64) int64 {
 	return fullID / 10000
+}
+
+func getMtrStartTime() string {
+	now := time.Now()
+	week := com.SubString(now.Weekday().String(), 0, 3)
+	month := com.SubString(now.Month().String(), 0, 3)
+	return fmt.Sprintf("%s %s %d %s", week, month, now.Day(), now.Format("15:04:05 2006"))
 }
