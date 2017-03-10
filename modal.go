@@ -199,7 +199,10 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 		ttlKeys = append(ttlKeys, k)
 	}
 	sort.Ints(ttlKeys)
-	lastTTLKey := ttlKeys[len(ttlKeys)-1]
+	lastTTLKey := 0
+	if len(ttlKeys) > 0 {
+		 lastTTLKey = ttlKeys[len(ttlKeys)-1]
+	}
 
 	summarys := map[int]map[string]string{}
 	for i := 1; i <= lastTTLKey; i++ {
