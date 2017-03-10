@@ -23,17 +23,6 @@ func sortHasReply(array []*TTLData) bool {
 	return false
 }
 
-// least array all is no-reply
-func sortLeastAllNoReply(least []*TTLData) bool {
-	for i := len(least) - 1; i >= 0; i-- {
-		item := least[i]
-		if item.status != "no-reply" {
-			return false
-		}
-	}
-	return true
-}
-
 func clearSummary(summary map[int]map[string]string) {
 	var ttlKeys []int
 	for k := range summary {
@@ -42,11 +31,9 @@ func clearSummary(summary map[int]map[string]string) {
 	sort.Ints(ttlKeys)
 
 	for i := len(ttlKeys) - 1; i >= 0; i-- {
-		j := i - 1
-		if j >= 0 {
-			if summary[i]["ip"] == "???" && summary[j]["ip"] == "???" {
-				delete(summary, i)
-			}
+		k := ttlKeys[i]
+		if summary["ip"][k] == "???" && summary["ip"][k-1] == "???" && i > 0 {
+			delete(summary, k)
 		}
 	}
 }
