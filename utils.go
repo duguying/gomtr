@@ -22,6 +22,17 @@ func sortHasReply(array []*TTLData) bool {
 	return false
 }
 
+// least array all is no-reply
+func sortLeastAllNoReply(least []*TTLData) bool {
+	for i := len(least) - 1; i >= 0; i-- {
+		item := least[i]
+		if item.status != "no-reply" {
+			return false
+		}
+	}
+	return true
+}
+
 func sortLastTTLData(array []*TTLData) *TTLData {
 	l := len(array)
 	for i := l - 1; i >= 0; i-- {
