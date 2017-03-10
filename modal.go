@@ -167,7 +167,10 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 
 	var keys []int
 	for ks := range mt.ttlData.GetMap() {
-		k, _ := strconv.Atoi(ks)
+		k, e := strconv.Atoi(ks)
+		if e != nil {
+			fmt.Println("e", e)
+		}
 		keys = append(keys, k)
 	}
 	sort.Ints(keys)
