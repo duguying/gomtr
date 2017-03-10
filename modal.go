@@ -261,8 +261,7 @@ func (mt *MtrTask) GetSummaryString() string {
 		hostname = "127.0.0.1"
 	}
 
-	summary := fmt.Sprintf("[target] %s\n", mt.target)
-	summary = summary + fmt.Sprintf("%-28s %9s %4s %6s %6s %6s %6s %6s\n", "HOST: "+com.SubString(hostname, 0, 20), "Loss%", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("%-28s %9s %4s %6s %6s %6s %6s %6s\n", "HOST: "+com.SubString(hostname, 0, 20), "Loss%", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
@@ -275,6 +274,6 @@ func (mt *MtrTask) GetSummaryString() string {
 func (mt *MtrTask) GetSummaryDecorateString() string {
 	table := mt.GetSummaryString()
 
-	summary := fmt.Sprintf("[ID] %d\n", mt.id) + table + "\n"
+	summary := fmt.Sprintf("[ID] %d [target] %s\n", mt.id, mt.target) + table + "\n"
 	return summary
 }
