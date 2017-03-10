@@ -168,7 +168,7 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 	for ks := range mt.ttlData.GetMap() {
 		k, e := strconv.Atoi(ks)
 		if e != nil {
-			fmt.Println("e", e)
+			//fmt.Println("e", e)
 		}
 		keys = append(keys, k)
 	}
@@ -253,11 +253,11 @@ func (mt *MtrTask) GetSummaryString() string {
 	}
 	sort.Ints(keys)
 
-	summary := fmt.Sprintf("%3s %20s %9s %7s %8s %8s %8s %8s %8s\n", "ttl", "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("%3s %-20s %9s %7s %8s %8s %8s %8s %8s\n", "ttl", "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintf("%3s %20s %9s %7s %8s %8s %8s %8s %8s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
+		summary = summary + fmt.Sprintf("%3s.|-- %-20s %9s %7s %8s %8s %8s %8s %8s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
 	}
 
 	return summary
