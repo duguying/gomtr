@@ -213,7 +213,7 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 		value, ok := results[i]
 		if ok {
 			summarys[i] = map[string]string{
-				"Loss":  fmt.Sprintf("%.0f%%", (1-float32(sortSntReality(value))/float32(mt.c))*100),
+				"Loss":  fmt.Sprintf("%.01f%%", (1-float32(sortSntReality(value))/float32(mt.c))*100),
 				"Last":  fmtNumber(sortLast(value)),
 				"Avg":   fmtNumber(sortAvg(value)),
 				"Best":  fmtNumber(sortBest(value)),
