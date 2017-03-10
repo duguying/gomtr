@@ -119,7 +119,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 
 		// timeout
 		if now-start > 500 {
-			fmt.Println("[timeout]", now-start)
+			fmt.Printf("[timeout:%d][rid:%d]\n", now-start, rid)
 			return 1
 		}
 

@@ -140,11 +140,11 @@ func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 		ttlData:  safemap.New(),
 	}
 
+	ms.index++
+
 	ms.taskQueue.Put(fmt.Sprintf("%d", ms.index), task)
 
 	task.send(ms.in, ms.index, ip, c)
-
-	ms.index++
 
 	if ms.index > ms.flag {
 		ms.index = 1

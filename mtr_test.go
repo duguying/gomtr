@@ -24,6 +24,6 @@ func Test_Mtr(t *testing.T) {
 	}
 
 	for {
-		time.Sleep(1)
+		time.Sleep(time.Second)
 	}
 }
