@@ -32,7 +32,7 @@ func clearSummary(summary map[int]map[string]string) {
 
 	for i := len(ttlKeys) - 1; i >= 0; i-- {
 		k := ttlKeys[i]
-		if summary[k]["ip"] == "???" && summary[k-1]["ip"] == "???" && i > 0 {
+		if summary[k]["IP"] == "???" && summary[k-1]["IP"] == "???" && i > 0 {
 			delete(summary, k)
 		}else{
 			return

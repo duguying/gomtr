@@ -15,7 +15,7 @@ func main() {
 
 	fmt.Println(mtr.GetServiceStartupTime())
 
-	iplist := []string{"183.131.7.130", "127.0.0.1", "114.215.151.25", "111.13.101.208"}
+	iplist := []string{"4.4.4.4", "183.131.7.130", "127.0.0.1", "114.215.151.25", "111.13.101.208"}
 
 	for i := 0; i < len(iplist); i++ {
 		id := i
