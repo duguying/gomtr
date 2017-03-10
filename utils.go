@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gogather/com"
 	"math"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -31,6 +32,23 @@ func sortLeastAllNoReply(least []*TTLData) bool {
 		}
 	}
 	return true
+}
+
+func clearSummary(summary map[int]map[string]string) {
+	var ttlKeys []int
+	for k := range summary {
+		ttlKeys = append(ttlKeys, k)
+	}
+	sort.Ints(ttlKeys)
+
+	for i := len(ttlKeys) - 1; i >= 0; i-- {
+		j := i - 1
+		if j >= 0 {
+			if summary[i]["ip"] == "???" && summary[j]["ip"] == "???" {
+				delete(summary, i)
+			}
+		}
+	}
 }
 
 func sortLastTTLData(array []*TTLData) *TTLData {

@@ -239,11 +239,14 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 			}
 		}
 
-		if sortHasReply(value) || sortLeastAllNoReply(value[i:]){
+		if sortHasReply(value) {
 			break
 		}
 
 	}
+
+	clearSummary(summarys)
+
 	return summarys
 }
 
