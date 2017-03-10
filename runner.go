@@ -23,6 +23,7 @@ type MtrService struct {
 	out           io.ReadCloser
 	outChan       chan string
 	mtrPacketPath string
+	startAt       string
 }
 
 // NewMtrService new a mtr service
@@ -116,6 +117,8 @@ func (ms *MtrService) startup() {
 		}
 	}()
 
+	ms.startAt = fmt.Sprintf("Start: %s", getMtrStartTime())
+
 	// wait sub process
 	if e := cmd.Wait(); nil != e {
 		fmt.Printf("ERROR: %v\n", e)
@@ -146,12 +149,17 @@ func (ms *MtrService) Request(ip string, c int, callback func(interface{})) {
 		callback: callback,
 		c:        c,
 		ttlData:  safemap.New(),
+		target:   ip,
 	}
 
 	ms.taskQueue.Put(fmt.Sprintf("%d", taskID), task)
 
 	task.send(ms.in, taskID, ip, c)
 
+}
+
+func (ms *MtrService) GetServiceStartupTime() string {
+	return ms.startAt
 }
 
 func (ms *MtrService) parseTTLData(data string) {

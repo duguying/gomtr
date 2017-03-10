@@ -2,6 +2,7 @@ package gomtr
 
 import (
 	"fmt"
+	"github.com/gogather/com"
 	"github.com/gogather/safemap"
 	"io"
 	"os"
@@ -27,6 +28,7 @@ type MtrTask struct {
 	id       int64
 	callback func(interface{})
 	c        int
+	target   string
 	ttlData  *safemap.SafeMap // item is ttlData, key is ttl
 	sendTime time.Time
 	CostTime int64
@@ -259,8 +261,8 @@ func (mt *MtrTask) GetSummaryString() string {
 		hostname = "127.0.0.1"
 	}
 
-	summary := fmt.Sprintf("Start: %s\n", getMtrStartTime())
-	summary = summary + fmt.Sprintf("%-28s %9s %4s %6s %6s %6s %6s %6s\n", "HOST: "+hostname, "Loss%", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("[target] %s\n", mt.target)
+	summary = summary + fmt.Sprintf("%-28s %9s %4s %6s %6s %6s %6s %6s\n", "HOST: "+com.SubString(hostname, 0, 20), "Loss%", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
