@@ -259,7 +259,7 @@ func (mt *MtrTask) GetSummaryString() string {
 		hostname = "127.0.0.1"
 	}
 
-	summary := fmt.Sprintf("HOST: %3s %-20s %9s %7s %8s %8s %8s %8s %8s\n", hostname, "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("%-27s %9s %7s %8s %8s %8s %8s %8s\n", "HOST: "+hostname, "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
