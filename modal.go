@@ -32,6 +32,7 @@ type MtrTask struct {
 	c        int
 	ttlData  *safemap.SafeMap // item is ttlData, key is ttl
 	sendTime time.Time
+	CostTime int64
 }
 
 func (mt *MtrTask) save(ttl int, data *TTLData) {
@@ -76,6 +77,8 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 			time.Sleep(time.Millisecond)
 		}
 	}
+
+	mt.CostTime = time.Now().UnixNano() - mt.sendTime.UnixNano()
 
 	// callback
 	mt.callback(mt)

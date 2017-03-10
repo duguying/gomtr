@@ -18,7 +18,7 @@ func main() {
 	for i := 0; i < len(iplist); i++ {
 		mtr.Request(iplist[i], 10, func(response interface{}) {
 			task := response.(*gomtr.MtrTask)
-			log.Blueln("[ID]", i)
+			log.Blueln("[ID] %d cost: %d ms\n", i, task.CostTime / 1000000)
 			fmt.Println(task.GetSummaryString())
 		})
 	}
