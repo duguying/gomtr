@@ -81,7 +81,6 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 	// callback
 	mt.callback(mt)
 	mt.clear()
-	// todo: remove this task from task queue
 
 }
 
@@ -258,7 +257,7 @@ func (mt *MtrTask) GetSummaryString() string {
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintf("%3s %20s %9s %7s %8s %8s %8s %8s %8s %s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"], item["raw"])
+		summary = summary + fmt.Sprintf("%3s %20s %9s %7s %8s %8s %8s %8s %8s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
 	}
 
 	return summary
