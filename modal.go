@@ -1,6 +1,7 @@
 package gomtr
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gogather/com"
 	"github.com/gogather/safemap"
@@ -95,11 +96,11 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 	start := time.Now().UnixNano() / 1000000
 
 	for {
-		// get tllID
-		tllID := getTTLID(rid)
+		// get ttlID
+		ttlID := getTTLID(rid)
 
 		// check ready
-		d, ok := mt.ttlData.Get(fmt.Sprintf("%d", tllID))
+		d, ok := mt.ttlData.Get(fmt.Sprintf("%d", ttlID))
 		if !ok || d == nil {
 			// not ready, continue
 		} else {
@@ -123,6 +124,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 		// timeout
 		if now-start > 1 {
 			//fmt.Printf("[timeout:%d][rid:%d]\n", now-start, rid)
+			mt.save(ttlID, &TTLData{err: errors.New("no-reply"), TTLID: ttlID})
 			return 1
 		}
 

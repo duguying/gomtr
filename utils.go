@@ -34,7 +34,7 @@ func clearSummary(summary map[int]map[string]string) {
 		k := ttlKeys[i]
 		if summary[k]["IP"] == "???" && summary[k-1]["IP"] == "???" && i > 0 {
 			delete(summary, k)
-		}else{
+		} else {
 			return
 		}
 	}
