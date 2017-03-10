@@ -18,8 +18,8 @@ func main() {
 	for i := 0; i < len(iplist); i++ {
 		go mtr.Request(iplist[i], 10, func(response interface{}) {
 			task := response.(*gomtr.MtrTask)
-			log.Bluef("[ID] %d cost: %d ms\n", i, task.CostTime / 1000000)
-			fmt.Println(task.GetSummaryString())
+			log.Bluef("[ID] %d cost: %d ms\n", i, task.CostTime/1000000)
+			fmt.Println(task.GetSummaryDecorateString())
 		})
 	}
 }

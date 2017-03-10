@@ -5,6 +5,7 @@ import (
 	"github.com/gogather/com"
 	"math"
 	"strconv"
+	"time"
 )
 
 func fmtNumber(n float64) string {
@@ -170,4 +171,11 @@ func getTTLID(fullID int64) int {
 
 func getRealID(fullID int64) int64 {
 	return fullID / 10000
+}
+
+func getMtrStartTime() string {
+	now := time.Now()
+	week := com.SubString(now.Weekday().String(), 0, 3)
+	month := com.SubString(now.Month().String(), 0, 3)
+	return fmt.Sprintf("%s %s %d %s", week, month, now.Day(), now.Format("15:04:05 2006"))
 }

@@ -259,12 +259,20 @@ func (mt *MtrTask) GetSummaryString() string {
 		hostname = "127.0.0.1"
 	}
 
-	summary := fmt.Sprintf("%-28s %9s %3s %6s %6s %6s %6s %6s\n", "HOST: "+hostname, "Loss%", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("Start: %s\n", getMtrStartTime())
+	summary = summary + fmt.Sprintf("%-28s %9s %4s %6s %6s %6s %6s %6s\n", "HOST: "+hostname, "Loss%", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintf("%3s.|-- %-20s %9s %3s %6s %6s %6s %6s %6s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
+		summary = summary + fmt.Sprintf("%3s.|-- %-20s %9s %4s %6s %6s %6s %6s %6s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
 	}
 
+	return summary
+}
+
+func (mt *MtrTask) GetSummaryDecorateString() string {
+	table := mt.GetSummaryString()
+
+	summary := fmt.Sprintf("[ID] %d\n", mt.id) + table + "\n"
 	return summary
 }
