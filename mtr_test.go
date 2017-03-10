@@ -18,7 +18,7 @@ func Test_Mtr(t *testing.T) {
 	for i := 0; i < len(iplist); i++ {
 		go mtr.Request(iplist[i], 10, func(response interface{}) {
 			task := response.(*MtrTask)
-			log.Blueln("[ID] %d cost: %d ms\n", task.id, task.CostTime / 1000000)
+			log.Bluef("[ID] %d cost: %d ms\n", task.id, task.CostTime / 1000000)
 			fmt.Println(task.GetSummaryString())
 		})
 	}
