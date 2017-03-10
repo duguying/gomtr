@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strconv"
 	"time"
+	"os"
 )
 
 // parsed ttl item data
@@ -253,7 +254,7 @@ func (mt *MtrTask) GetSummaryString() string {
 	}
 	sort.Ints(keys)
 
-	summary := fmt.Sprintf("%3s %-20s %9s %7s %8s %8s %8s %8s %8s\n", "ttl", "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	summary := fmt.Sprintf("HOST: %3s %-20s %9s %7s %8s %8s %8s %8s %8s\n", os.Hostname(), "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
