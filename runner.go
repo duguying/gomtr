@@ -231,13 +231,14 @@ func (ms *MtrService) parseTTLDatum(data string) {
 	}
 
 	ttlData = &TTLData{
-		TTLID:  getTTLID(fullID),
-		ipType: ipType,
-		ip:     ip,
-		err:    ttlerr,
-		status: status,
-		raw:    data,
-		time:   ttlTime,
+		TTLID:        getTTLID(fullID),
+		ipType:       ipType,
+		ip:           ip,
+		err:          ttlerr,
+		status:       status,
+		raw:          data,
+		time:         ttlTime,
+		receivedTime: time.Now(),
 	}
 
 	// store

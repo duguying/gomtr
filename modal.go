@@ -11,13 +11,14 @@ import (
 
 // parsed ttl item data
 type TTLData struct {
-	TTLID  int
-	status string
-	ipType string
-	ip     string
-	time   int64
-	raw    string
-	err    error
+	TTLID        int
+	status       string
+	ipType       string
+	ip           string
+	time         int64
+	raw          string
+	err          error
+	receivedTime time.Time
 }
 
 func (td *TTLData) String() string {
@@ -30,6 +31,7 @@ type MtrTask struct {
 	callback func(interface{})
 	c        int
 	ttlData  *safemap.SafeMap // item is ttlData, key is ttl
+	sendTime time.Time
 }
 
 func (mt *MtrTask) save(ttl int, data *TTLData) {
@@ -46,6 +48,8 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 	} else if c < 1 {
 		c = 1
 	}
+
+	mt.sendTime = time.Now()
 
 	for i := 1; i <= c; i++ {
 		sendId := id*10000 + int64(i)*100
@@ -115,6 +119,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 
 		// timeout
 		if now-start > 500 {
+			fmt.Println("[timeout]", now-start)
 			return 1
 		}
 
