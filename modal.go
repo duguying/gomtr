@@ -174,7 +174,6 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 		keys = append(keys, k)
 	}
 	sort.Ints(keys)
-	fmt.Println("[keys]", keys)
 
 	for _, key := range keys {
 		item, ok := mt.ttlData.Get(fmt.Sprintf("%d", key))
