@@ -233,6 +233,10 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 			}
 		}
 
+		if sortHasReply(value) {
+			break
+		}
+
 	}
 	return summarys
 }
@@ -250,7 +254,7 @@ func (mt *MtrTask) GetSummaryString() string {
 
 	for _, key := range keys {
 		item := data[key]
-		summary = summary + fmt.Sprintf("%3s %20s %9s %7s %8s %8s %8s %8s %8s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"])
+		summary = summary + fmt.Sprintf("%3s %20s %9s %7s %8s %8s %8s %8s %8s %s\n", item["ttl"], item["IP"], item["Loss"], item["Snt"], item["Last"], item["Avg"], item["Best"], item["Wrst"], item["StDev"], item["raw"])
 	}
 
 	return summary

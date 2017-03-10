@@ -11,6 +11,16 @@ func fmtNumber(n float64) string {
 	return fmt.Sprintf("%.01f", n/1000)
 }
 
+func sortHasReply(array []*TTLData) bool {
+	for i := len(array) - 1; i >= 0; i-- {
+		item := array[i]
+		if item.status == "reply" {
+			return true
+		}
+	}
+	return false
+}
+
 func sortLastTTLData(array []*TTLData) *TTLData {
 	l := len(array)
 	for i := l - 1; i >= 0; i-- {
