@@ -21,10 +21,6 @@ type TTLData struct {
 	receivedTime time.Time
 }
 
-func (td *TTLData) String() string {
-	return fmt.Sprintf("")
-}
-
 // task
 type MtrTask struct {
 	id       int64
@@ -78,6 +74,8 @@ func (mt *MtrTask) send(in io.WriteCloser, id int64, ip string, c int) {
 		}
 	}
 
+	time.Sleep(time.Millisecond * 500)
+
 	mt.CostTime = time.Now().UnixNano() - mt.sendTime.UnixNano()
 
 	// callback
@@ -121,7 +119,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 		now := time.Now().UnixNano() / 1000000
 
 		// timeout
-		if now-start > 500 {
+		if now-start > 1 {
 			//fmt.Printf("[timeout:%d][rid:%d]\n", now-start, rid)
 			return 1
 		}
@@ -173,6 +171,7 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 		keys = append(keys, k)
 	}
 	sort.Ints(keys)
+	fmt.Println("[keys]", keys)
 
 	for _, key := range keys {
 		item, ok := mt.ttlData.Get(fmt.Sprintf("%d", key))
