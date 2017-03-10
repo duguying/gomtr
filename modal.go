@@ -105,12 +105,12 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 				// not ready, continue
 			} else {
 				// ready, check replied
-				if data.status == "ttl-expired" || data.err != nil {
-					// not get replied
-					return 1
-				} else if data.status == "reply" {
+				if data.status == "reply" {
 					// get replied
 					return 0
+				}else if data.status == "ttl-expired" || data.err != nil {
+					// not get replied
+					return 1
 				}
 			}
 		}
@@ -123,7 +123,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 			return 1
 		}
 
-		time.Sleep(1)
+		time.Sleep(time.Millisecond)
 	}
 
 	// this will not reached
