@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/gogather/safemap"
 	"io"
+	"os"
 	"sort"
 	"strconv"
 	"time"
-	"os"
 )
 
 // parsed ttl item data
@@ -109,7 +109,7 @@ func (mt *MtrTask) checkLoop(rid int64) int {
 				if data.status == "reply" {
 					// get replied
 					return 0
-				}else if data.status == "ttl-expired" || data.err != nil {
+				} else if data.status == "ttl-expired" || data.err != nil {
 					// not get replied
 					return 1
 				}
@@ -202,7 +202,7 @@ func (mt *MtrTask) GetSummary() map[int]map[string]string {
 	sort.Ints(ttlKeys)
 	lastTTLKey := 0
 	if len(ttlKeys) > 0 {
-		 lastTTLKey = ttlKeys[len(ttlKeys)-1]
+		lastTTLKey = ttlKeys[len(ttlKeys)-1]
 	}
 
 	summarys := map[int]map[string]string{}
@@ -254,7 +254,12 @@ func (mt *MtrTask) GetSummaryString() string {
 	}
 	sort.Ints(keys)
 
-	summary := fmt.Sprintf("HOST: %3s %-20s %9s %7s %8s %8s %8s %8s %8s\n", os.Hostname(), "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
+	hostname, err := os.Hostname()
+	if err != nil {
+		hostname = "127.0.0.1"
+	}
+
+	summary := fmt.Sprintf("HOST: %3s %-20s %9s %7s %8s %8s %8s %8s %8s\n", hostname, "ip", "Loss", "Snt", "Last", "Avg", "Best", "Wrst", "StDev")
 
 	for _, key := range keys {
 		item := data[key]
