@@ -112,7 +112,7 @@ func (ms *MtrService) startup() {
 		for {
 			var readBytes []byte = make([]byte, 100)
 			err.Read(readBytes)
-			time.Sleep(1)
+			time.Sleep(time.Second)
 		}
 	}()
 
