@@ -22,9 +22,10 @@ type MtrService struct {
 	in        io.WriteCloser
 	out       io.ReadCloser
 	outChan   chan string
+	mtrPacketPath string
 }
 
-func NewMtrService() *MtrService {
+func NewMtrService(path string) *MtrService {
 	return &MtrService{
 		taskQueue: safemap.New(),
 		flag:      102400,
@@ -32,6 +33,7 @@ func NewMtrService() *MtrService {
 		in:        nil,
 		out:       nil,
 		outChan:   make(chan string, 1000),
+		mtrPacketPath:path,
 	}
 }
 
@@ -43,7 +45,7 @@ func (ms *MtrService) Start() {
 
 func (ms *MtrService) startup() {
 
-	cmd := exec.Command("./mtr-packet")
+	cmd := exec.Command(ms.mtrPacketPath)
 
 	var e error
 

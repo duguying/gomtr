@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	mtr := gomtr.NewMtrService()
+	mtr := gomtr.NewMtrService("./mtr-packet")
 	go mtr.Start()
 
 	time.Sleep(time.Second * 5)
