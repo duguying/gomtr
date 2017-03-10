@@ -1,5 +1,8 @@
 language: go
 sudo: true
+branches:
+  only:
+  - master
 go:
   - tip
 install:
