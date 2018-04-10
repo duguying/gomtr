@@ -34,6 +34,7 @@ func (tm *ToolMtr) SimpleCall(host string, size int, timeout time.Duration) (err
 
 func (tm *ToolMtr) call(size int) (content string, err error) {
 	c := exec.Command(tm.ToolPath, "-s", fmt.Sprintf("%d", size), "-n", "-r")
+	c.Wait()
 	data, err := c.CombinedOutput()
 	if err != nil {
 		return "", err
