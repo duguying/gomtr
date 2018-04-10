@@ -28,6 +28,7 @@ func (tm *ToolMtr) SimpleCall(host string, size int, timeout time.Duration) (err
 		return err
 	}
 	tm.parseReport(content)
+	return nil
 }
 
 func (tm *ToolMtr) call(size int) (content string, err error) {
