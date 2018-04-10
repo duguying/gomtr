@@ -7,9 +7,9 @@ package mtr
 import (
 	"fmt"
 	"os/exec"
-	"time"
-	"strings"
 	"regexp"
+	"strings"
+	"time"
 )
 
 type ToolMtr struct {
@@ -23,7 +23,7 @@ func New(path string) *ToolMtr {
 }
 
 func (tm *ToolMtr) SimpleCall(host string, size int, timeout time.Duration) (err error) {
-	content,err:=tm.call(60)
+	content, err := tm.call(60)
 	if err != nil {
 		return err
 	}
@@ -42,15 +42,18 @@ func (tm *ToolMtr) call(size int) (content string, err error) {
 }
 
 func (tm *ToolMtr) parseReport(content string) {
-	lines:=strings.Split(content, "\n")
+	lines := strings.Split(content, "\n")
 	for _, line := range lines {
+		line = strings.Replace(line, "\r", "", -1)
+		line = strings.TrimSpace(line)
+
 		if strings.HasPrefix(line, "Start:") {
 			// 时间行
-		}else if strings.HasPrefix(line, "HOST:") {
+		} else if strings.HasPrefix(line, "HOST:") {
 			// 表头
-		}else {
-			line = strings.Replace(strings.TrimSpace(line),"\t"," ",-1)
-			exp,_:=regexp.Compile(`[ ]+`)
+		} else {
+			line = strings.Replace(line, "\t", " ", -1)
+			exp, _ := regexp.Compile(`[ ]+`)
 			line = exp.ReplaceAllString(line, " ")
 			fmt.Println(line)
 		}
