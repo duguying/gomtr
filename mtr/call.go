@@ -27,6 +27,7 @@ func (tm *ToolMtr) SimpleCall(host string, size int, timeout time.Duration) (err
 	if err != nil {
 		return err
 	}
+	fmt.Println("=======>",content)
 	tm.parseReport(content)
 	return nil
 }
